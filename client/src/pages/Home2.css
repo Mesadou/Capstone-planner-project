@@ -1,0 +1,118 @@
+main {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 100vh;
+  background: linear-gradient(0.25turn, #C7A9D3, #f876f5);;
+  
+}
+
+
+
+.wallpaper{
+  width: 35%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /*
+  background: #EEEEEE;
+  border-left: 2px solid gray;
+  box-shadow: 0px 0px 10px rgba(2, 2, 2, 0.7);
+  */
+  margin-left: auto
+}
+
+.infobox {
+  width: min(700px, 90%);
+  height: min(800px, 90vh);
+  max-width: 700px;
+  max-height: 800px;
+  border: 3px solid black;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  border-radius: 30px;
+  background: linear-gradient(0.25turn, #C1BEBE, #635C5C );
+  //background: linear-gradient(0.25turn, #C7A9D3, #f876f5);
+  align-items: center;
+}
+
+.infobox h1{
+  font-size: 36px;
+  line-height: 1.4;
+  padding: 10px 70px;
+  margin-bottom: 2rem;
+  margin: 10px; 
+}
+
+.login{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 45px;
+  margin: 40px 40px;
+  border-radius: 30px;
+  background: #EEEEEE;
+  //background: linear-gradient(0.25turn, #C1BEBE, #635C5C );
+}
+
+.form-group {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  margin-bottom: 1rem;
+}
+
+.form-group h2{
+  text-align: left;
+  font-size: 24px;
+  margin-left: 10px;
+}
+
+.form-group input{
+  width: 100% ;
+  height: 30px;
+  font-size: 24px;
+  padding: 10px;
+  margin: 0px 0px 0px 10px;
+  border: 1.5px solid rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+.forms-buttons{
+  width: 68%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 8px;
+  border-radius: 3px;
+}
+
+.forms-buttons button{
+  padding: 4px 0px;
+  font-size: 14px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.forms-buttons button:hover{
+  background: rgba(255, 255, 255, 1);
+}
+
+.acc-link{
+  color: black;
+  font-size: 12px;
+  margin-top: 10px;
+}
+
+#sign-in{
+  background: linear-gradient(0.25turn, #C7A9D3, #f876f5);
+}
+
+
