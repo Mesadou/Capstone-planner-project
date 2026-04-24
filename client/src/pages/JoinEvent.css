@@ -1,0 +1,68 @@
+.join-main{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  //background: linear-gradient(0.25turn, #C7A9D3, #f876f5); 
+}
+
+.invitation-card{
+  width: min(1000px, 90%);
+  max-width: 1000px;
+  border: solid blue;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; 
+  background: linear-gradient(0.25turn, #C1BEBE, #635C5C );
+}
+
+.event-card{
+  width: min(700px, 90%);
+  max-width: 700px;
+  border: solid green;
+  border-radius: 10px;
+  background: #AA60c8;
+}
+
+.event-card img{
+  border: solid red;
+  width: 50px;
+  height: 50px;
+}
+
+.event-card h1{
+  border: solid black;
+  font-size: 32px;
+  padding: 10px 40px;
+  margin-top: 0; //delete ?
+
+}
+
+.event-card p{
+  max-height: 100px;
+  overflow-y: auto;
+  line-height: 1.5;
+}
+
+.event-title{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 70px;
+  border: solid black; 
+}
+
+
+.event-group{
+  display: flex;
+  flex-direction: row;
+  align-items: cneter;
+  gap: 10px;
+  margin-top: auto;
+  align-self: flex-start;
+  border-radius: 10px;
+  border: solid black;
+}
