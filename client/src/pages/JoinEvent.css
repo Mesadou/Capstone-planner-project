@@ -10,59 +10,87 @@
 .invitation-card{
   width: min(1000px, 90%);
   max-width: 1000px;
-  border: solid blue;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center; 
-  background: linear-gradient(0.25turn, #C1BEBE, #635C5C );
+  background: linear-gradient(0.15turn, #C1BEBE, 30%, #635C5C);
 }
 
 .event-card{
   width: min(700px, 90%);
   max-width: 700px;
-  border: solid green;
   border-radius: 10px;
   background: #AA60c8;
+  margin: 20px 0px;
 }
 
 .event-card img{
-  border: solid red;
   width: 50px;
   height: 50px;
+  margin: 10px;
+  border-radius: 10px;
 }
 
 .event-card h1{
-  border: solid black;
   font-size: 32px;
   padding: 10px 40px;
-  margin-top: 0; //delete ?
-
+  margin:  0px 0px 20px; //delete ?
+  
 }
 
 .event-card p{
   max-height: 100px;
   overflow-y: auto;
   line-height: 1.5;
+  text-align: center;
 }
 
 .event-title{
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 70px;
-  border: solid black; 
+  gap: 6px;
+  
+}
+
+.event-title h1{
+  margin-top: 20px;
 }
 
 
 .event-group{
   display: flex;
   flex-direction: row;
-  align-items: cneter;
+  align-items: center;
   gap: 10px;
   margin-top: auto;
   align-self: flex-start;
   border-radius: 10px;
-  border: solid black;
+  
 }
+
+.event-join{
+  margin: 20px 20px 10px auto;
+}
+
+.event-join button{ 
+  padding: 4px 8px;
+  font-size: 14px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  background: #07FF2D;
+}
+
+.event-join button:hover{
+  background: rgba(255, 255, 255, 1);
+}
+ 
+
+p{
+  color: white;
+}
+  

@@ -26,7 +26,7 @@ function JoinEvent() {
           </div>
         </section>
 
-        <div>
+        <div className="event-join">
           <button>Join Group</button>
         </div>
       </section>
