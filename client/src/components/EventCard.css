@@ -7,6 +7,10 @@
   margin: 20px 0px;
 }
 
+.event-card p{
+  color: white;
+}
+
 .event-title{
   display: flex;
   flex-direction: row;
