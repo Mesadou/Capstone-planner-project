@@ -19,15 +19,12 @@
   background: linear-gradient(0.15turn, #C1BEBE, 30%, #635C5C);
 }
 
-.invitation-card img{
-  width: 50px;
-  height: 50px;
-  margin: 10px;
-  border-radius: 10px;
-}
-
 .invitation-card h1{
   font-size: 40px;
+}
+
+.invitation-card p{
+  color: white;
 }
 
 .invite-group{
@@ -41,53 +38,11 @@
   align-self: flex-start;
 }
 
-.event-card{
-  width: min(700px, 90%);
-  max-width: 700px;
+.invite-avatar{
+  width: 50px;
+  height: 50px;
+  margin: 10px;
   border-radius: 10px;
-  box-shadow: 0px 0px 10px rgba(2, 2, 2, 0.7);
-  background: #AA60c8;
-  margin: 20px 0px;
-}
-
-.event-card h1{
-  font-size: 32px;
-  padding: 10px 40px;
-  margin:  0px 0px 20px; //delete ?
-}
-
-.event-desc {
-  max-height: 100px;
-  line-height: 1.5;
-  font-size: 12px;
-  padding: 0px 40px;
-  text-align: justify;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.event-title{
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 6px;
-}
-
-.event-title h1{
-  margin-top: 20px;
-}
-
-.event-group{
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  font-size: 14px;
-  border-radius: 10px;
-  gap: 10px;
-  margin-top: auto;
-  align-self: flex-start;
 }
 
 .event-join{
@@ -108,7 +63,5 @@
   background: #8EF29D;
 }
  
-p{
-  color: white;
-}
+
   
