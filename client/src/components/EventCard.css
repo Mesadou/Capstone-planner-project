@@ -52,9 +52,10 @@
   flex-wrap: wrap;
   gap: 10px;
   margin: 16px 0px 10px 10px;
-  padding: 8px 14px 8px;
+  padding: 6px 10px 6px;
   border-radius: 20px;
   background: gray;
+  max-width: 80%;
 }
 
 .avatar-stack {
@@ -63,8 +64,8 @@
 }
 
 .member-avatar {
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid white;
@@ -76,17 +77,32 @@
 .avatar-stack img:first-child{
   margin-left: 0;
 }
+
 .member-names{
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 4px;
   border-left: 1px solid rgba(255,255,255,0.3);
   padding-left: 12px;
+  overflow: hidden;
+  max-width: 200px;
 }
 
 .member-names p {
   font-size: 11px;
   text-align: center;
-  
+  white-space: nowrap;
+}
+
+.names-expand {
+  font-size: 11px;
+  color: rgba(255,255,255,0.8);
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: underline;
+}
+
+.names-expand:hover {
+  color: white;
 }

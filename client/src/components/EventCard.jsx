@@ -1,8 +1,17 @@
+import { useState } from 'react'
 import './EventCard.css'
 
 function EventCard({ title, description, members, imageSrc }) {
+  const [showAllNames, setShowAllNames] = useState(false)
+
+  const displayLimit = 3
+  const visibleMembers = showAllNames
+    ? members
+    : members.slice(0, displayLimit)
+  const hasMore = members.length > displayLimit
+
+
   return (
-    <main>
       <section className="event-card">
         <div className="event-title">
           <img className="event-img" src={imageSrc} alt="event" />
@@ -26,14 +35,30 @@ function EventCard({ title, description, members, imageSrc }) {
           </div>
 
           <div className="member-names">
-            {members.map((member) => (
-              <p key={member.id}>{member.name}</p>
-            ))}
-          </div>
+          {visibleMembers.map((member) => (
+            <p key={member.id}>{member.name}</p>
+          ))}
+          {hasMore && !showAllNames && (
+            <p 
+              className="names-expand" 
+              onClick={() => setShowAllNames(true)}
+            >
+              +{members.length - displayLimit} more...
+            </p>
+          )}
+          {showAllNames && (
+            <p 
+              className="names-expand" 
+              onClick={() => setShowAllNames(false)}
+            >
+              show less
+            </p>
+          )}
+        </div>
 
         </div>
       </section>
-    </main>
+  
   )
 }
 

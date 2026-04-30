@@ -20,7 +20,8 @@ function JoinEvent() {
           members={[
             {id: 1, name: "Rylee", avatar: "https://i.pravatar.cc/150?img=1"},
             {id: 2, name: "Darty", avatar: "https://i.pravatar.cc/150?img=2"},
-            {id: 3, name: "Jordan", avatar: "https://i.pravatar.cc/150?img=3"}
+            {id: 3, name: "Jordan", avatar: "https://i.pravatar.cc/150?img=3"},
+            {id: 4, name: "Rylan", avatar: "https://i.pravatar.cc/150?img=5"}
           ]}
         />
 
