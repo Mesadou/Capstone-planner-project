@@ -79,9 +79,36 @@ function EventPage() {
 
         {/* Recommend Event/Suggest new event */}
         <div className="create-event">
-          <img />
-          <h2>Event/Game name</h2>
-          <p>list of people who have</p>
+          <h3>Suggest an Activity</h3>
+
+          <div className="suggestions-list">
+            <div className="suggestion-item">
+              <img className="suggestion-img" />
+              <div className="suggestion-info">
+                <p className="suggestion-name">Dave & Busters</p>
+                <p className="suggestion-type">Arcade</p>
+              </div>
+              <button className="suggest-btn">+ Suggest</button>
+            </div>
+
+            <div className="suggestion-item">
+              <img className="suggestion-img" />
+              <div className="suggestion-info">
+                <p className="suggestion-name">Catan</p>
+                <p className="suggestion-type">Board Game</p>
+              </div>
+              <button className="suggest-btn">+ Suggest</button>
+            </div>
+
+            <div className="suggestion-item">
+              <img className="suggestion-img" />
+              <div className="suggestion-info">
+                <p className="suggestion-name">Bowling</p>
+                <p className="suggestion-type">Activity</p>
+              </div>
+              <button className="suggest-btn">+ Suggest</button>
+            </div>
+          </div>
         </div>
       </section>
 

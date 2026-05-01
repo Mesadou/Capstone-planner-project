@@ -69,3 +69,13 @@
 .modal-close:hover {
   background: #e0e0e0;
 }
+
+.date-picker {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1.5px solid #AA60c8;
+  font-size: 14px;
+  color: #2C2C2A;
+  background: white;
+}
