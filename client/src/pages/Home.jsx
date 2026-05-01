@@ -1,42 +1,24 @@
+import { Show, SignInButton } from '@clerk/react'
 import './Home.css'
 
 function Home() {
   return (
     <main className="home-main">
-      
+      <div className="home-left">
+        <h1>Welcome to Game Night</h1>
+        <p>Plan your next game night with friends</p>
+      </div>
 
-      {/*Information Box */}
       <section className="wallpaper">
-        <section className="infobox">
-          <h1>Welcome to *Application Name*</h1>
-
-          <div className="login">
-            <div className="form-group">
-              <h2>Username</h2>
-              <input type="text" placeholder="Enter username" />
-            </div>
-            <div className="form-group">
-              <h2>Password</h2>
-              <input type="text" placeholder="Enter password" />
-            </div>
-
-            <div className="forms-buttons">
-              <button id="sign-in">Sign-in</button>
-              <div className="acc-link">
-                <p id="register">Register</p>
-                <p id="password">Forgot Password?</p>
-              </div>
-            </div>
-
-          </div>
-
-
-
-        </section>
-
+        <Show when="signed-out">
+          <SignInButton />
+        </Show>
+        <Show when="signed-in">
+          <p>You are signed in! <a href="/events/1">Go to your event</a></p>
+        </Show>
       </section>
     </main>
-  );
+  )
 }
 
 export default Home
