@@ -1,0 +1,74 @@
+/* Base styles shared between both layouts */
+.user-avatar {
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid white;
+  background: #ccc;
+  flex-shrink: 0;
+}
+
+.user-name {
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* Card layout - horizontal stacked avatars with names */
+.user-list-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+}
+
+.user-list-card .user-avatar {
+  width: 24px;
+  height: 24px;
+  margin-left: -6px;
+}
+
+.user-list-card .user-item:first-child .user-avatar {
+  margin-left: 0;
+}
+
+.user-list-card .user-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Sidebar layout - vertical list with larger avatars */
+.user-list-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  padding: 0px;
+}
+
+.user-list-sidebar .user-avatar {
+  width: 26px;
+  height: 26px;
+}
+
+.user-list-sidebar .user-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 40px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.user-list-sidebar .user-item:last-child{
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.user-list-sidebar .user-name {
+  font-size: 13px;
+}

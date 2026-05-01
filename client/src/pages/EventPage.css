@@ -10,8 +10,8 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  justify-content: flex-start; 
   padding-left: 20px;
-  border: solid black;
 }
 
 .event-lists{
@@ -29,8 +29,7 @@
   padding: 8px 20px;
   margin: 10px auto 20px 0px;
   border-radius: 50px;
-  border: solid black;
-  background: rgba(128, 128, 128, 0.8);
+  background: rgba(128, 128, 128, 0.7);
 }
 
 .group-name{
@@ -41,19 +40,106 @@
 }
 
 .event-box{
-  width: min(1000px, 90%);
-  max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  width: min(100% - 40px);
+  max-width: 100%;
+  height: calc(100vh - 120px);
   padding: 10px 40px;
   margin: 10px 0px;
   border-radius: 20px;
-  border:solid white;
   background: rgba(0,0,0,0.6);
 }
 
+.event-actions{
+  display: flex;
+  flex-direction: row;
+  
+}
+
+.event-buttons{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 14px; 
+  border-radius: 20px;
+  gap: 6px;
+  margin-left: auto;
+  padding: 4px;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.event-decline{
+  padding: 6px 10px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  background: #FF0707;
+}
+
+.event-decline:hover{
+  background: #EC8787;
+}
+
+.event-accept { 
+  padding: 6px 10px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  background: #07FF2D;
+}
+
+.event-accept:hover{
+  background: #8EF29D;
+}
+
+.type-bar{
+  margin-top: auto;
+}
+
+.type-bar input{
+  width: min(1000px, 90%);
+  max-width: 1000px;
+  padding: 10px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  border: none;
+  outline: none;
+  color: white;
+  background: rgba(200, 200, 200, 0.6);
+}
+
+.type-bar input::placeholder{
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.eventlists{
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .users-list{
-  border: solid black;
+  width: min(100% - 40px);
+  border-radius: 10px;
+  margin: 20px;
+  
+  color: white;
+  background: rgba(0,0,0,0.5)
+}
+
+.users-list h3{
+  font-size: 16px;
+  padding: 10px
 }
 
 .create-event{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   border: solid white;
+  margin-top: auto;
 }
