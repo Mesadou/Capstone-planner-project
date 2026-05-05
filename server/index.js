@@ -1,5 +1,6 @@
 const express = require('express')
 const {PrismaClient} = require('@prisma/client')
+const { parse } = require('node:path')
 const prisma = new PrismaClient()
 const app = express()
 const PORT = 3000
@@ -64,6 +65,43 @@ app.get('/api/events/:id', async (req, res) => {
   }
 
   res.json(event)
+})
+
+
+//Get suggestions 
+app.post('/api/events/:id/suggestions', async (req, res) => {
+  // Step 1 - get event id from URL
+  const eventId = parseInt(req.params.id)
+
+  // Step 2 - get suggestion data from request body
+  const { title, type, players, user_id } = req.body
+
+  // Step 3 - create new suggestion in database
+  const suggestion = await prisma.gameSuggestionuggestion.create({
+    data: {
+      title,
+      type,
+      players,
+      event_id: eventId,
+      user_id: parseInt(user_id)
+    }
+  })
+
+  // Step 4 - send back created suggestion
+  res.json(suggestion)
+}) 
+
+app.get('/api/events/:id/suggestions', async (req, res) =>{
+  // Step 1 - get the id from the URL
+  const eventId = parseInt(req.params.id)
+
+  // Step 2 - find suggestions in the database
+  const suggestions = await prisma.gameSuggestion.findMany({
+  where: { event_id: eventId }
+  })
+
+  // Step 3 - send back the data
+  res.json(suggestions)
 })
 
 app.listen(PORT, () => {

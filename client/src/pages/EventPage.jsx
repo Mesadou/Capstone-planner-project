@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import "./EventPage.css"
 import EventCard from '../components/EventCard'
 import Modal from '../components/Modal'
 import UserList from '../components/UserList'
-
+import Api from '../api'
 
 function EventPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -17,15 +17,29 @@ function EventPage() {
     console.log('User wants to suggest new time')
     setIsModalOpen(false)
   }
+
+  const[event, setEvent] = useState(null)
+  const[loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    api.get('/api/events/1')
+      .then(res => setEvent(res.data))
+      .catch(err => console.error(err))
+      .finally(() => setLoading(false))
+  }, [])
+
+  if (loading) return <p>Loading...</p>
+  if (!event) return <p>Event not found</p>
+
+
   return (
     <main className="event-main">
-      {/* className="" */}
 
       {/*Text Box */}
       <section className="event-chat">
         {/*Group Name line */}
         <div className="event-name">
-          <h1 className="group-name">John Smith's Group</h1>
+          <h1 className="group-name">{event.title}</h1>
         </div>
 
         <section className="event-box">
