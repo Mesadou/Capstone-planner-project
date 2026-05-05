@@ -1,9 +1,15 @@
 const express = require('express')
-const {PrismaClient} = require('@prisma/client')
+const { PrismaClient } = require('@prisma/client')
+const cors = require('cors')
 const { parse } = require('node:path')
 const prisma = new PrismaClient()
 const app = express()
 const PORT = 3000
+
+//Middleware
+app.use(cors({
+  origin: 'http://localhost:5173'
+}))
 
 app.use(express.json())
 
@@ -89,19 +95,61 @@ app.post('/api/events/:id/suggestions', async (req, res) => {
 
   // Step 4 - send back created suggestion
   res.json(suggestion)
-}) 
+})
 
-app.get('/api/events/:id/suggestions', async (req, res) =>{
+app.get('/api/events/:id/suggestions', async (req, res) => {
   // Step 1 - get the id from the URL
   const eventId = parseInt(req.params.id)
 
   // Step 2 - find suggestions in the database
   const suggestions = await prisma.gameSuggestion.findMany({
-  where: { event_id: eventId }
+    where: { event_id: eventId }
   })
 
   // Step 3 - send back the data
   res.json(suggestions)
+})
+
+
+//Vote Route
+app.post('/api/suggestions/:id/vote', async (req, res) => {
+  const suggestionId = parseInt(req.params.id)
+  const { user_id, value } = req.body
+
+  // Check if vote exists
+  const existing = await prisma.vote.findFirst({
+      where: {
+        user_id: parseInt(user_id),
+        game_suggestion_id: suggestionId
+    }
+    })
+
+    if (existing) {
+      // update the existing vote
+      const updated = await prisma.vote.update({
+        where: { id: existing.id },
+        data: { value: parseInt(value) }
+      })
+      res.json(updated)
+    } else {
+      // create a new vote
+      const vote = await prisma.vote.create({
+        data: {
+          user_id: parseInt(user_id),
+          game_suggestion_id: suggestionId,
+          value: parseInt(value)
+      }
+      })
+      res.json(vote)
+    }
+})
+
+app.post('/api/events/:id/availability', async(req, res) =>{
+
+})
+
+app.get('/api/events/:id/availability', async(req, res) =>{
+  
 })
 
 app.listen(PORT, () => {
