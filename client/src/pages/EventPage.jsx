@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import "./EventPage.css"
 import EventCard from '../components/EventCard'
 import Modal from '../components/Modal'
 import UserList from '../components/UserList'
-import Api from '../api'
+import api from '../api'
 
 function EventPage() {
+  const { id } = useParams()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [event, setEvent] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   function handleCantMakeIt() {
     console.log('User cant make it')
@@ -18,15 +22,12 @@ function EventPage() {
     setIsModalOpen(false)
   }
 
-  const[event, setEvent] = useState(null)
-  const[loading, setLoading] = useState(true)
-
   useEffect(() => {
-    api.get('/api/events/1')
+    api.get(`/api/events/${id}`)
       .then(res => setEvent(res.data))
       .catch(err => console.error(err))
       .finally(() => setLoading(false))
-  }, [])
+  }, [id])
 
   if (loading) return <p>Loading...</p>
   if (!event) return <p>Event not found</p>
@@ -39,7 +40,7 @@ function EventPage() {
       <section className="event-chat">
         {/*Group Name line */}
         <div className="event-name">
-          <h1 className="group-name">{event.title}</h1>
+          <h1 className="group-name">{event ? event.title : 'John Smiths Group'}</h1>
         </div>
 
         <section className="event-box">

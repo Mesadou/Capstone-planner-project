@@ -1,4 +1,4 @@
-import { Show, SignInButton } from '@clerk/react'
+import { Show, SignInButton, SignIn, UserButton } from '@clerk/react'
 import './Home.css'
 
 function Home() {
@@ -11,10 +11,13 @@ function Home() {
 
       <section className="wallpaper">
         <Show when="signed-out">
-          <SignInButton />
+          {/* Creates Sign-in form rather than button */}
+          <SignIn />
         </Show>
         <Show when="signed-in">
           <p>You are signed in! <a href="/events/1">Go to your event</a></p>
+          {/* Used to logout of Clerk. Click on Icon */}
+          <UserButton />
         </Show>
       </section>
     </main>
