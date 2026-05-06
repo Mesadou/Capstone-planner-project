@@ -113,35 +113,38 @@ app.get('/api/events/:id/suggestions', async (req, res) => {
 
 //Vote Route
 app.post('/api/suggestions/:id/vote', async (req, res) => {
+  // Which suggestion is being voted on? (from URL)
   const suggestionId = parseInt(req.params.id)
+
+  // Who is voting and which direction? (from request body)
   const { user_id, value } = req.body
 
-  // Check if vote exists
+  // Has this user already voted on this suggestion?
   const existing = await prisma.vote.findFirst({
-      where: {
-        user_id: parseInt(user_id),
-        game_suggestion_id: suggestionId
+    where: {
+      user_id: parseInt(user_id),
+      game_suggestion_id: suggestionId
     }
-    })
+  })
 
-    if (existing) {
-      // update the existing vote
-      const updated = await prisma.vote.update({
-        where: { id: existing.id },
-        data: { value: parseInt(value) }
-      })
-      res.json(updated)
-    } else {
-      // create a new vote
-      const vote = await prisma.vote.create({
-        data: {
-          user_id: parseInt(user_id),
-          game_suggestion_id: suggestionId,
-          value: parseInt(value)
+  if (existing) {
+    // They voted before - just update their vote direction
+    const updated = await prisma.vote.update({
+      where: { id: existing.id },
+      data: { value: parseInt(value) }
+    })
+    res.json(updated)
+  } else {
+    // First time voting - create a new vote row
+    const vote = await prisma.vote.create({
+      data: {
+        user_id: parseInt(user_id),
+        game_suggestion_id: suggestionId,
+        value: parseInt(value)
       }
-      })
-      res.json(vote)
-    }
+    })
+    res.json(vote)
+  }
 })
 
 app.post('/api/events/:id/availability', async(req, res) =>{
