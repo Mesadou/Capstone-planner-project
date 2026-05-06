@@ -70,10 +70,13 @@ model Vote {
 }
 
 model Availability {
-  id                Int           @id @default(autoincrement())
-  status            String
-  user              User          @relation(fields: [user_id], references: [id])
-  user_id           Int
-  candidate_date    CandidateDate @relation(fields: [candidate_date_id], references: [id])
-  candidate_date_id Int
+  id           Int      @id @default(autoincrement())
+  user_id      Int
+  event_id     Int
+  day_of_week  Int
+  time_slot    String
+  is_available Boolean  @default(true)
+  created_at   DateTime @default(now())
+  user         User     @relation(fields: [user_id], references: [id])
+  event        Event    @relation(fields: [event_id], references: [id])
 }

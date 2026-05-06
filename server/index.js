@@ -147,6 +147,65 @@ app.post('/api/suggestions/:id/vote', async (req, res) => {
   }
 })
 
+// Get all availability for an event grouped by time slot
+app.get('/api/events/:id/availability/summary', async (req, res) => {
+  const eventId = parseInt(req.params.id)
+
+  const slots = await prisma.availability.groupBy({
+    by: ['day_of_week', 'time_slot'],
+    where: {
+      event_id: eventId,
+      is_available: true
+    },
+    _count: {
+      user_id: true
+    },
+    orderBy: {
+      _count: {
+        user_id: 'desc'
+      }
+    }
+  })
+
+  res.json(slots)
+})
+
+// Toggle a single availability slot
+app.post('/api/events/:id/availability', async (req, res) => {
+  const eventId = parseInt(req.params.id)
+  const { user_id, day_of_week, time_slot, is_available } = req.body
+
+  // Same upsert pattern as votes
+  const existing = await prisma.availability.findFirst({
+    where: {
+      user_id: parseInt(user_id),
+      event_id: eventId,
+      day_of_week,
+      time_slot
+    }
+  })
+
+  if (existing) {
+    const updated = await prisma.availability.update({
+      where: { id: existing.id },
+      data: { is_available }
+    })
+    res.json(updated)
+  } else {
+    const slot = await prisma.availability.create({
+      data: {
+        user_id: parseInt(user_id),
+        event_id: eventId,
+        day_of_week,
+        time_slot,
+        is_available
+      }
+    })
+    res.json(slot)
+  }
+})
+
+ /* 
 app.post('/api/events/:id/availability', async(req, res) =>{
 
 })
@@ -154,6 +213,7 @@ app.post('/api/events/:id/availability', async(req, res) =>{
 app.get('/api/events/:id/availability', async(req, res) =>{
   
 })
+*/
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`)
