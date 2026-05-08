@@ -13,38 +13,30 @@ datasource db {
 }
 
 model User {
-  id            Int              @id @default(autoincrement())
-  username      String           @unique
-  email         String           @unique
+  id            Int            @id @default(autoincrement())
+  username      String         @unique
+  email         String         @unique
   password_hash String
-  created_at    DateTime         @default(now())
+  created_at    DateTime       @default(now())
   events        Event[]
   suggestions   GameSuggestion[]
   votes         Vote[]
   availability  Availability[]
+  eventMembers  EventMember[]
 }
 
 model Event {
-  id              Int              @id @default(autoincrement())
-  title           String
-  body            String?
-  status          String           @default("open")
-  invite_token    String           @unique
-  created_at      DateTime         @default(now())
-  host            User             @relation(fields: [host_user_id], references: [id])
-  host_user_id    Int
-  candidate_dates CandidateDate[]
-  suggestions     GameSuggestion[]
-}
-
-model CandidateDate {
-  id           Int            @id @default(autoincrement())
-  date_time    DateTime
-  format       String
-  created_at   DateTime       @default(now())
-  event        Event          @relation(fields: [event_id], references: [id])
-  event_id     Int
-  availability Availability[]
+  id            Int            @id @default(autoincrement())
+  title         String
+  body          String?
+  status        String         @default("open")
+  invite_token  String         @unique
+  created_at    DateTime       @default(now())
+  host          User           @relation(fields: [host_user_id], references: [id])
+  host_user_id  Int
+  suggestions   GameSuggestion[]
+  availability  Availability[]
+  members       EventMember[]
 }
 
 model GameSuggestion {
@@ -61,11 +53,11 @@ model GameSuggestion {
 }
 
 model Vote {
-  id               Int            @id @default(autoincrement())
-  value            Int
-  user             User           @relation(fields: [user_id], references: [id])
-  user_id          Int
-  suggestion       GameSuggestion @relation(fields: [game_suggestion_id], references: [id])
+  id                 Int            @id @default(autoincrement())
+  value              Int
+  user               User           @relation(fields: [user_id], references: [id])
+  user_id            Int
+  suggestion         GameSuggestion @relation(fields: [game_suggestion_id], references: [id])
   game_suggestion_id Int
 }
 
@@ -79,4 +71,14 @@ model Availability {
   created_at   DateTime @default(now())
   user         User     @relation(fields: [user_id], references: [id])
   event        Event    @relation(fields: [event_id], references: [id])
+}
+
+model EventMember {
+  id        Int      @id @default(autoincrement())
+  event_id  Int
+  user_id   Int
+  status    String   @default("pending")
+  joined_at DateTime @default(now())
+  event     Event    @relation(fields: [event_id], references: [id])
+  user      User     @relation(fields: [user_id], references: [id])
 }

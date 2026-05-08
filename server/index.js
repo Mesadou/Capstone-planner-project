@@ -1,7 +1,7 @@
 const express = require('express')
 const { PrismaClient } = require('@prisma/client')
 const cors = require('cors')
-const { parse } = require('node:path')
+
 const prisma = new PrismaClient()
 const app = express()
 const PORT = 3000
@@ -83,7 +83,7 @@ app.post('/api/events/:id/suggestions', async (req, res) => {
   const { title, type, players, user_id } = req.body
 
   // Step 3 - create new suggestion in database
-  const suggestion = await prisma.gameSuggestionuggestion.create({
+  const suggestion = await prisma.gameSuggestion.create({
     data: {
       title,
       type,
@@ -205,15 +205,45 @@ app.post('/api/events/:id/availability', async (req, res) => {
   }
 })
 
- /* 
-app.post('/api/events/:id/availability', async(req, res) =>{
+// Join an event
+app.post('/api/events/:id/join', async (req, res) => {
+  const eventId = parseInt(req.params.id)
+  const { user_id } = req.body
 
+  // Check if already a member
+  const existing = await prisma.eventMember.findFirst({
+    where: {
+      event_id: eventId,
+      user_id: parseInt(user_id)
+    }
+  })
+
+  if (existing) {
+    return res.status(400).json({ message: 'Already a member' })
+  }
+
+  const member = await prisma.eventMember.create({
+    data: {
+      event_id: eventId,
+      user_id: parseInt(user_id),
+      status: 'joined'
+    }
+  })
+
+  res.json(member)
 })
 
-app.get('/api/events/:id/availability', async(req, res) =>{
-  
-})
-*/
+// Get all members of an event
+app.get('/api/events/:id/members', async (req, res) => {
+  const eventId = parseInt(req.params.id)
+
+  const members = await prisma.eventMember.findMany({
+    where: { event_id: eventId },
+    include: { user: true }
+  })
+
+  res.json(members)
+}) 
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`)
