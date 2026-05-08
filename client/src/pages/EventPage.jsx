@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import "./EventPage.css"
+import AvailabilityGrid from '../components/AvailabilityGrid'
 import EventCard from '../components/EventCard'
 import Modal from '../components/Modal'
 import UserList from '../components/UserList'
@@ -11,6 +12,7 @@ function EventPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [event, setEvent] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [isAvailabilityOpen, setIsAvailabilityOpen] = useState(false)
 
   function handleCantMakeIt() {
     console.log('User cant make it')
@@ -20,6 +22,20 @@ function EventPage() {
   function handleSuggestNewTime() {
     console.log('User wants to suggest new time')
     setIsModalOpen(false)
+  }
+
+  async function handleSuggest(activityTitle, activityType) {
+    try {
+      await api.post(`/api/events/${id}/suggestions`, {
+        title: activityTitle,
+        type: activityType,
+        players: null,
+        user_id: 1
+      })
+      console.log('Suggestion added!')
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   useEffect(() => {
@@ -64,17 +80,23 @@ function EventPage() {
                 <span className="votes-label">responded</span>
               </div>
               <div className="event-buttons">
+                <button className="availability-btn" onClick={() => setIsAvailabilityOpen(true)}> Set Availability</button>
+
                 <button className="event-decline" onClick={() => setIsModalOpen(true)}>No</button>
                 <button className="event-accept">Yes</button>
               </div>
             </div>
-
-
+          </div>
+            
+          {/*<div className="availability-section">
+            <h3>Your Availabilty</h3>
+            <p>Cilck the times you're available this week</p>
+            <AvailabilityGrid eventId={id} userId={2} />
           </div>
 
           <div className="type-bar">
             <input type="text" placeholder="Message" />
-          </div>
+          </div>*/}
         </section>
 
       </section>
@@ -103,7 +125,11 @@ function EventPage() {
                 <p className="suggestion-name">Dave & Busters</p>
                 <p className="suggestion-type">Arcade</p>
               </div>
-              <button className="suggest-btn">+ Suggest</button>
+              <button className="suggest-btn"
+                onClick={() => handleSuggest("Dave & Busters", "Arcade")}
+              >
+                + Suggest
+              </button>
             </div>
 
             <div className="suggestion-item">
@@ -112,7 +138,11 @@ function EventPage() {
                 <p className="suggestion-name">Catan</p>
                 <p className="suggestion-type">Board Game</p>
               </div>
-              <button className="suggest-btn">+ Suggest</button>
+              <button className="suggest-btn"
+                onClick={() => handleSuggest("Catan", "Board Game")}
+              >
+                + Suggest
+              </button>
             </div>
 
             <div className="suggestion-item">
@@ -121,7 +151,11 @@ function EventPage() {
                 <p className="suggestion-name">Bowling</p>
                 <p className="suggestion-type">Activity</p>
               </div>
-              <button className="suggest-btn">+ Suggest</button>
+              <button className="suggest-btn"
+                onClick={() => handleSuggest("Bowling", "Activity")}
+              >
+                + Suggest
+              </button>
             </div>
           </div>
         </div>
@@ -133,6 +167,24 @@ function EventPage() {
         onCantMakeIt={handleCantMakeIt}
         onSuggestNewTime={handleSuggestNewTime}
       />
+
+      {isAvailabilityOpen && (
+        <div className="modal-overlay" onClick={() => setIsAvailabilityOpen(false)}>
+          <div className="availability-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="availability-modal-header">
+              <h2>Set Your Availability</h2>
+              <button
+                className="modal-close"
+                onClick={() => setIsAvailabilityOpen(false)}
+              >
+                ✕
+              </button>
+            </div>
+            <p>Click and drag to mark when you're available</p>
+            <AvailabilityGrid eventId={id} userId={1} />
+          </div>
+        </div>
+      )}
 
     </main>
   );

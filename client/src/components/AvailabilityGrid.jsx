@@ -1,38 +1,105 @@
-function AvailabilityGrid({ slots, totalMembers }) {
-  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-  const times = ['09:00', '10:00', '11:00', '12:00', '13:00', 
-                 '14:00', '15:00', '16:00', '17:00', '18:00', 
-                 '19:00', '20:00', '21:00']
+import { useState, useRef } from 'react'
+import './AvailabilityGrid.css'
+import api from '../api'
 
-  function getColor(count) {
-    if (count === 0) return 'rgba(255,255,255,0.1)'
-    const intensity = count / totalMembers
-    return `rgba(0, 255, 100, ${intensity})`
+function AvailabilityGrid({ eventId, userId }) {
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  const times = [
+    '09:00', '10:00', '11:00', '12:00', '13:00',
+    '14:00', '15:00', '16:00', '17:00', '18:00',
+    '19:00', '20:00', '21:00'
+  ]
+
+  const [selected, setSelected] = useState({})
+  const isDragging = useRef(false)
+  const dragValue = useRef(true)
+
+  function getCellKey(dayIndex, time) {
+    return `${dayIndex}-${time}`
   }
 
+  function handleMouseDown(dayIndex, timeIndex) {
+    isDragging.current = true
+    const key = getCellKey(dayIndex, timeIndex)
+    const newValue = !selected[key]
+    dragValue.current = newValue
+
+    setSelected(prev => ({ ...prev, [key]: newValue }))
+    sendToBackend(dayIndex, timeIndex, newValue)
+  }
+
+  function handleMouseEnter(dayIndex, timeIndex) {
+    if (!isDragging.current) return
+    const key = getCellKey(dayIndex, timeIndex)
+    setSelected(prev => ({ ...prev, [key]: dragValue.current }))
+    sendToBackend(dayIndex, timeIndex, dragValue.current)
+  }
+
+  function handleMouseUp() {
+    isDragging.current = false
+  }
+
+  async function sendToBackend(dayIndex, timeIndex, isAvailable) {
+    try {
+      await api.post(`/api/events/${eventId}/availability`, {
+        user_id: userId,
+        day_of_week: dayIndex,
+        time_slot: times[timeIndex],
+        is_available: isAvailable
+      })
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  function getWeekDays() {
+    const today = new Date()
+    const sunday = new Date(today)
+    sunday.setDate(today.getDate() - today.getDay())
+
+    return Array.from({ length: 7 }, (_, i) => {
+      const date = new Date(sunday)
+      date.setDate(sunday.getDate() + i)
+      return {
+        name: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][i],
+        date: date.getDate(),
+        month: date.toLocaleString('default', { month: 'short' })
+      }
+    })
+  }
+
+  const weekDays = getWeekDays()
+
   return (
-    <div className="availability-grid">
+    <div
+      className="availability-grid"
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
+    >
+      {/* Header row with day names */}
       <div className="grid-header">
-        <div className="time-label"></div>
-        {days.map(day => (
-          <div key={day} className="day-label">{day}</div>
+        <div className="time-col-label"></div>
+        {weekDays.map(day => (
+          <div key={day.name} className="day-label">
+            <span className="day-name">{day.name}</span>
+            <span className="day-date">{day.month} {day.date}</span>
+          </div>
         ))}
       </div>
 
-      {times.map(time => (
+      {/* Time rows */}
+      {times.map((time, timeIndex) => (
         <div key={time} className="grid-row">
           <div className="time-label">{time}</div>
           {days.map((day, dayIndex) => {
-            const slot = slots.find(
-              s => s.day_of_week === dayIndex && s.time_slot === time
-            )
-            const count = slot?._count?.user_id || 0
+            const key = getCellKey(dayIndex, timeIndex)
+            const isSelected = selected[key]
             return (
               <div
                 key={dayIndex}
-                className="grid-cell"
-                style={{ background: getColor(count) }}
-                title={`${count} people available`}
+                className={`grid-cell ${isSelected ? 'selected' : ''}`}
+                onMouseDown={() => handleMouseDown(dayIndex, timeIndex)}
+                onMouseEnter={() => handleMouseEnter(dayIndex, timeIndex)}
               />
             )
           })}
@@ -41,3 +108,5 @@ function AvailabilityGrid({ slots, totalMembers }) {
     </div>
   )
 }
+
+export default AvailabilityGrid

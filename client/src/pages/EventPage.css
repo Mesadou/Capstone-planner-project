@@ -211,3 +211,41 @@
 .suggest-btn:hover {
   background: rgba(255,255,255,0.1);
 }
+
+.availability-modal {
+  background: #1a1a2e;
+  border-radius: 16px;
+  padding: 2rem;
+  width: min(800px, 95vw);
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0px 10px 40px rgba(0,0,0,0.5);
+}
+
+.availability-modal-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.availability-modal-header h2 {
+  font-size: 20px;
+  color: white;
+  margin: 0;
+}
+
+.availability-btn {
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 20px;
+  border: 1.5px solid rgba(255,255,255,0.4);
+  background: transparent;
+  color: white;
+  cursor: pointer;
+}
+
+.availability-btn:hover {
+  background: rgba(255,255,255,0.1);
+}
