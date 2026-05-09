@@ -245,6 +245,34 @@ app.get('/api/events/:id/members', async (req, res) => {
   res.json(members)
 }) 
 
+// Sync Clerk user with database
+app.post('/api/users/sync', async (req, res) => {
+  const { clerk_id, username, email } = req.body
+
+  // Check if user already exists
+  const existing = await prisma.user.findUnique({
+    where: { clerk_id }
+  })
+
+  if (existing) {
+    return res.json(existing)
+  }
+
+  // Create new user if they don't exist
+  const user = await prisma.user.create({
+    data: {
+      clerk_id,
+      username,
+      email,
+      password_hash: null
+    }
+  })
+
+  res.json(user)
+})
+
+
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`)
 })

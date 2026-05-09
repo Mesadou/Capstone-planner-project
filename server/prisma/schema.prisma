@@ -14,9 +14,10 @@ datasource db {
 
 model User {
   id            Int            @id @default(autoincrement())
+  clerk_id      String         @unique  // add this line
   username      String         @unique
   email         String         @unique
-  password_hash String
+  password_hash String?        // make this optional since Clerk handles passwords
   created_at    DateTime       @default(now())
   events        Event[]
   suggestions   GameSuggestion[]
