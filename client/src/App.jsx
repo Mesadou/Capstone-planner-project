@@ -1,11 +1,29 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Show, SignInButton, SignUpButton, UserButton } from '@clerk/react'
+import { useEffect } from 'react'
 import Home from './pages/Home'
 import CreateEvent from './pages/CreateEvent'
 import EventPage from './pages/EventPage'
 import JoinEvent from './pages/JoinEvent'
 
 function App() {
+  const { user, isSignedIn } = useUser()
+
+  useEffect(() => {
+    if (isSignedIn && user) {
+      api.post('/api/users/sync', {
+        clerk_id: user.id,
+        username: user.username || user.firstName || user.emailAddresses[0].emailAddress.split('@')[0],
+        email: user.emailAddresses[0].emailAddress
+      })
+        .then(res => {
+          // Store the database user id somewhere accessible
+          console.log('Database user:', res.data)
+        })
+        .catch(err => console.error(err))
+    }
+  }, [isSignedIn, user])
+
   return (
     <BrowserRouter>
       <Routes>

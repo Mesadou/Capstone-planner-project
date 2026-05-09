@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
+import { useDbUser } from '../context/UserContext'
 import "./EventPage.css"
 import AvailabilityGrid from '../components/AvailabilityGrid'
 import EventCard from '../components/EventCard'
@@ -9,6 +10,7 @@ import api from '../api'
 
 function EventPage() {
   const { id } = useParams()
+  const { dbUser } = useDbUser()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [event, setEvent] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -30,7 +32,7 @@ function EventPage() {
         title: activityTitle,
         type: activityType,
         players: null,
-        user_id: 1
+        user_id: dbUser?.id
       })
       console.log('Suggestion added!')
     } catch (err) {

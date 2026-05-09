@@ -1,6 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { ClerkProvider } from '@clerk/react'
+import { UserProvider} from './context/UserContext'
 import './index.css'
 import App from './App.jsx'
 
