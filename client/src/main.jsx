@@ -13,7 +13,9 @@ createRoot(document.getElementById('root')).render(
       publishableKey={publishableKey}
       afterSignInUrl="/events/1"
     >
-      <App />
+      <UserProvider>
+        <App />
+      </UserProvider>
     </ClerkProvider>
   </StrictMode>,
 )

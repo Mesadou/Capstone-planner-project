@@ -49,6 +49,7 @@ function EventPage() {
 
   if (loading) return <p>Loading...</p>
   if (!event) return <p>Event not found</p>
+  if (!dbUser) return <p>Loading User...</p>
 
 
   return (

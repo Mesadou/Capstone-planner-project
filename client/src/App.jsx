@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { Show, SignInButton, SignUpButton, UserButton } from '@clerk/react'
+import { Show, SignInButton, SignUpButton, UserButton, useUser } from '@clerk/react'
 import { useEffect } from 'react'
+import api from './api'
 import Home from './pages/Home'
 import CreateEvent from './pages/CreateEvent'
 import EventPage from './pages/EventPage'
