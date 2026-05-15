@@ -107,6 +107,13 @@
   margin-top: 10px;
 }
 
+.home-signed-in {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
 #sign-in{
   background: linear-gradient(0.25turn, #C7A9D3, #f876f5);
 }

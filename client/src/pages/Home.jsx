@@ -15,8 +15,12 @@ function Home() {
           <SignIn />
         </Show>
         <Show when="signed-in">
-          <p>You are signed in! <a href="/events/1">Go to your event</a></p>
-          {/* Used to logout of Clerk. Click on Icon */}
+          <div className="home-signed-in">
+            <p>You are signed in! <a href="/events/1">Go to your event</a></p>
+            {/* Used to logout of Clerk. Click on Icon */}
+            <a href="/create" className="create-link"> + Create a Game Night</a>
+            <a href="/events/1">Go to your event</a>
+          </div>
           <UserButton />
         </Show>
       </section>

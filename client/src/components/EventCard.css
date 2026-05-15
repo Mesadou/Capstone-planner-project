@@ -16,6 +16,29 @@
   color: white;
 }
 
+
+/* .event-card-wrapper {
+  xxx;
+  > .event-card {
+    yyy;
+    p {
+      zzz;
+    }
+  }
+}
+
+.even-card-wrapper {
+  xxx;
+}
+
+.event-card-wrapper > .event-card {
+  yyy;
+}
+
+.event-card-wrapper > .event-card p {
+  zzz;
+} */
+
 .event-title{
   display: flex;
   flex-direction: row;
