@@ -37,7 +37,7 @@ app.post('/api/users', async (req, res) => {
     data: {
       username,
       email,
-      password_hash
+      password_hash,
     }
   })
 
