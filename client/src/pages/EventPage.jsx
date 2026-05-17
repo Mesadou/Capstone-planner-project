@@ -1,65 +1,62 @@
-import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
-import { useDbUser } from '../context/UserContext'
-import "./EventPage.css"
-import AvailabilityGrid from '../components/AvailabilityGrid'
-import EventCard from '../components/EventCard'
-import Modal from '../components/Modal'
-import UserList from '../components/UserList'
-import api from '../api'
+import { useState } from "react";
+import { useParams } from "react-router-dom";
+import { useDbUser } from "../context/UserContext";
+import { useEvent } from "../hooks/useEvent";
+import { useMembers } from "../hooks/useMembers";
+import { useSuggestions } from "../hooks/useSuggestions";
+import "./EventPage.css";
+import AvailabilityGrid from "../components/AvailabilityGrid";
+import EventCard from "../components/EventCard";
+import Modal from "../components/Modal";
+import UserList from "../components/UserList";
 
 function EventPage() {
-  const { id } = useParams()
-  const { dbUser } = useDbUser()
+  const { id } = useParams();
+  const { dbUser } = useDbUser();
+  const { event, loading, error } = useEvent(id);
+  const { members, loading: membersLoading } = useMembers(id);
+  const {
+    suggestions,
+    loading: suggestionsLoading,
+    addSuggestion,
+  } = useSuggestions(id);
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [event, setEvent] = useState(null)
-  const [loading, setLoading] = useState(true)
   const [isAvailabilityOpen, setIsAvailabilityOpen] = useState(false)
 
   function handleCantMakeIt() {
-    console.log('User cant make it')
-    setIsModalOpen(false)
+    console.log("User cant make it");
+    setIsModalOpen(false);
   }
 
   function handleSuggestNewTime() {
-    console.log('User wants to suggest new time')
-    setIsModalOpen(false)
+    console.log("User wants to suggest new time");
+    setIsModalOpen(false);
   }
 
+  // REPLACE your current handleSuggest with this
   async function handleSuggest(activityTitle, activityType) {
     try {
-      await api.post(`/api/events/${id}/suggestions`, {
-        title: activityTitle,
-        type: activityType,
-        players: null,
-        user_id: dbUser?.id
-      })
-      console.log('Suggestion added!')
+      await addSuggestion(activityTitle, activityType, dbUser?.id);
+      console.log("Suggestion added!");
     } catch (err) {
-      console.error(err)
+      console.error(err);
     }
   }
 
-  useEffect(() => {
-    api.get(`/api/events/${id}`)
-      .then(res => setEvent(res.data))
-      .catch(err => console.error(err))
-      .finally(() => setLoading(false))
-  }, [id])
-
-  if (loading) return <p>Loading...</p>
-  if (!event) return <p>Event not found</p>
-  if (!dbUser) return <p>Loading User...</p>
-
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Something went wrong loading the event</p>
+  if (!event) return <p>Event not found</p>;
+  if (!dbUser) return <p>Loading User...</p>;
 
   return (
     <main className="event-main">
-
       {/*Text Box */}
       <section className="event-chat">
         {/*Group Name line */}
         <div className="event-name">
-          <h1 className="group-name">{event ? event.title : 'John Smiths Group'}</h1>
+          <h1 className="group-name">
+            {event ? event.title : "John Smiths Group"}
+          </h1>
         </div>
 
         <section className="event-box">
@@ -69,10 +66,26 @@ function EventPage() {
               description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. In suscipit feugiat purus, elementum ultricies sem dapibus porttitor. Fusce hendrerit nisi risus, non pellentesque ex varius eget. Sed elementum fringilla sapien, vitae aliquam lorem blandit vitae. Vivamus non risus volutpat ex consectetur varius in sit amet massa. Vestibulum quis "
               imageSrc=""
               members={[
-                { id: 1, name: "Rylee", avatar: "https://i.pravatar.cc/150?img=1" },
-                { id: 2, name: "Darty", avatar: "https://i.pravatar.cc/150?img=2" },
-                { id: 3, name: "Jordan", avatar: "https://i.pravatar.cc/150?img=3" },
-                { id: 4, name: "Rylan", avatar: "https://i.pravatar.cc/150?img=5" }
+                {
+                  id: 1,
+                  name: "Rylee",
+                  avatar: "https://i.pravatar.cc/150?img=1",
+                },
+                {
+                  id: 2,
+                  name: "Darty",
+                  avatar: "https://i.pravatar.cc/150?img=2",
+                },
+                {
+                  id: 3,
+                  name: "Jordan",
+                  avatar: "https://i.pravatar.cc/150?img=3",
+                },
+                {
+                  id: 4,
+                  name: "Rylan",
+                  avatar: "https://i.pravatar.cc/150?img=5",
+                },
               ]}
             />
             <div className="event-actions">
@@ -83,14 +96,25 @@ function EventPage() {
                 <span className="votes-label">responded</span>
               </div>
               <div className="event-buttons">
-                <button className="availability-btn" onClick={() => setIsAvailabilityOpen(true)}> Set Availability</button>
+                <button
+                  className="availability-btn"
+                  onClick={() => setIsAvailabilityOpen(true)}
+                >
+                  {" "}
+                  Set Availability
+                </button>
 
-                <button className="event-decline" onClick={() => setIsModalOpen(true)}>No</button>
+                <button
+                  className="event-decline"
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  No
+                </button>
                 <button className="event-accept">Yes</button>
               </div>
             </div>
           </div>
-            
+
           {/*<div className="availability-section">
             <h3>Your Availabilty</h3>
             <p>Cilck the times you're available this week</p>
@@ -101,7 +125,6 @@ function EventPage() {
             <input type="text" placeholder="Message" />
           </div>*/}
         </section>
-
       </section>
 
       <section className="event-lists">
@@ -109,9 +132,21 @@ function EventPage() {
           <h3>Members</h3>
           <UserList
             members={[
-              { id: 1, name: "Rylee", avatar: "https://i.pravatar.cc/150?img=1" },
-              { id: 2, name: "Darty", avatar: "https://i.pravatar.cc/150?img=2" },
-              { id: 3, name: "Jordan", avatar: "https://i.pravatar.cc/150?img=3" }
+              {
+                id: 1,
+                name: "Rylee",
+                avatar: "https://i.pravatar.cc/150?img=1",
+              },
+              {
+                id: 2,
+                name: "Darty",
+                avatar: "https://i.pravatar.cc/150?img=2",
+              },
+              {
+                id: 3,
+                name: "Jordan",
+                avatar: "https://i.pravatar.cc/150?img=3",
+              },
             ]}
             layout="sidebar"
           />
@@ -128,7 +163,8 @@ function EventPage() {
                 <p className="suggestion-name">Dave & Busters</p>
                 <p className="suggestion-type">Arcade</p>
               </div>
-              <button className="suggest-btn"
+              <button
+                className="suggest-btn"
                 onClick={() => handleSuggest("Dave & Busters", "Arcade")}
               >
                 + Suggest
@@ -141,7 +177,8 @@ function EventPage() {
                 <p className="suggestion-name">Catan</p>
                 <p className="suggestion-type">Board Game</p>
               </div>
-              <button className="suggest-btn"
+              <button
+                className="suggest-btn"
                 onClick={() => handleSuggest("Catan", "Board Game")}
               >
                 + Suggest
@@ -154,7 +191,8 @@ function EventPage() {
                 <p className="suggestion-name">Bowling</p>
                 <p className="suggestion-type">Activity</p>
               </div>
-              <button className="suggest-btn"
+              <button
+                className="suggest-btn"
                 onClick={() => handleSuggest("Bowling", "Activity")}
               >
                 + Suggest
@@ -172,8 +210,14 @@ function EventPage() {
       />
 
       {isAvailabilityOpen && (
-        <div className="modal-overlay" onClick={() => setIsAvailabilityOpen(false)}>
-          <div className="availability-modal" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="modal-overlay"
+          onClick={() => setIsAvailabilityOpen(false)}
+        >
+          <div
+            className="availability-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="availability-modal-header">
               <h2>Set Your Availability</h2>
               <button
@@ -188,9 +232,8 @@ function EventPage() {
           </div>
         </div>
       )}
-
     </main>
   );
 }
 
-export default EventPage
+export default EventPage;
