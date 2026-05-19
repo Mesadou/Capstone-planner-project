@@ -271,7 +271,34 @@ app.post('/api/users/sync', async (req, res) => {
   res.json(user)
 })
 
+// Events the user is hosting
+app.get('/api/users/:id/events', async (req, res) => {
+  const userId = parseInt(req.params.id)
 
+  const events = await prisma.event.findMany({
+    where: { host_user_id: userId },
+    orderBy: { created_at: 'desc' }
+  })
+
+  res.json(events)
+})
+
+// Events the user has joined as a member
+app.get('/api/users/:id/joined-events', async (req, res) => {
+  const userId = parseInt(req.params.id)
+
+  const memberships = await prisma.eventMember.findMany({
+    where: { user_id: userId },
+    include: {
+      event: {
+        include: { host: true }
+      }
+    }
+  })
+
+  const events = memberships.map(m => m.event)
+  res.json(events)
+})
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`)
