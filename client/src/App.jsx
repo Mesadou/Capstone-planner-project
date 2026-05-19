@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Show, SignInButton, SignUpButton, UserButton, useUser } from '@clerk/react'
 import { useEffect } from 'react'
 import api from './api'
+import Dashboard from './pages/Dashboard'
 import Home from './pages/Home'
 import CreateEvent from './pages/CreateEvent'
 import EventPage from './pages/EventPage'
@@ -33,24 +34,22 @@ function App() {
         <Route path="/join/:token" element={<JoinEvent />} />
 
         {/* Protected routes */}
+        <Route path="/dashboard" element={
+          <>
+            <Show when="signed-in"><Dashboard /></Show>
+            <Show when="signed-out"><Home /></Show>
+          </>
+        } />
         <Route path="/create" element={
           <>
-            <Show when="signed-in">
-              <CreateEvent />
-            </Show>
-            <Show when="signed-out">
-              <Home />
-            </Show>
+            <Show when="signed-in"> <CreateEvent /></Show>
+            <Show when="signed-out"><Home /></Show>
           </>
         } />
         <Route path="/events/:id" element={
           <>
-            <Show when="signed-in">
-              <EventPage />
-            </Show>
-            <Show when="signed-out">
-              <Home />
-            </Show>
+            <Show when="signed-in"><EventPage /></Show>
+            <Show when="signed-out"><Home /></Show>
           </>
         } />
       </Routes>

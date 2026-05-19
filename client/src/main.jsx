@@ -11,7 +11,7 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ClerkProvider 
       publishableKey={publishableKey}
-      afterSignInUrl="/events/1"
+      afterSignInUrl="/dashboard"
     >
       <UserProvider>
         <App />

@@ -15,6 +15,8 @@ function CreateEvent() {
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [createdEvent, setCreatedEvent] = useState(null)  // holds event after creation
+
 
   function handleChange(e) {
     const { name, value } = e.target
@@ -25,7 +27,7 @@ function CreateEvent() {
   }
 
   async function handleSubmit(e) {
-    e.prventDefault()
+    e.preventDefault()
     if (!dbUser) return
 
     setLoading(true)
@@ -38,8 +40,7 @@ function CreateEvent() {
         host_user_id: dbUser.id
       })
 
-      const NewEvent = res.data
-      navigate('/events/${newEvent.id}')
+      setCreatedEvent(res.data)     //store it, don't navigate yet
     } catch (err) {
       console.error(err)
       setError('Something went wrong. Please try again.')
@@ -48,6 +49,54 @@ function CreateEvent() {
     }
   }
 
+  if (createdEvent) {
+    const inviteLink = `${window.location.origin}/join/${createdEvent.invite_token}`
+
+    return (
+      <main className="create-main">
+        <div className="create-container">
+          <h1>Event Created! 🎉</h1>
+          <p>Share this link with your friends so they can join:</p>
+        </div>
+
+        <section className="create-bgcontainer">
+          <div className="invite-box">
+            <p className="invite-label">Invite Link</p>
+            <div className="invite-link-row">
+              <input
+                className="invite-input"
+                type="text"
+                readOnly
+                value={inviteLink}
+              />
+              <button
+                className="copy-btn"
+                onClick={() => navigator.clipboard.writeText(inviteLink)}
+              >
+                Copy
+              </button>
+            </div>
+
+            <div className="invite-actions">
+              <button
+                className="create-btn"
+                onClick={() => navigate(`/events/${createdEvent.id}`)}  // ← backticks fixed
+              >
+                Go to Event Page
+              </button>
+              <button
+                className="secondary-btn"
+                onClick={() => navigate('/dashboard')}
+              >
+                Back to Dashboard
+              </button>
+            </div>
+          </div>
+        </section>
+      </main>
+    )
+  }
+  
   return (
     <main className="create-main">
       <div className="create-container">
