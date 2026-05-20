@@ -300,6 +300,18 @@ app.get('/api/users/:id/joined-events', async (req, res) => {
   res.json(events)
 })
 
+// Get all events for a specific user
+app.get('/api/users/:id/events', async (req, res) => {
+  const userId = parseInt(req.params.id)
+
+  const events = await prisma.event.findMany({
+    where: { host_user_id: userId },
+    orderBy: { created_at: 'desc' }
+  })
+
+  res.json(events)
+})
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`)
 })
