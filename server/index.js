@@ -312,6 +312,16 @@ app.get('/api/users/:id/events', async (req, res) => {
   res.json(events)
 })
 
+app.delete('/api/events/:id', async (req, res) => {
+  const eventId = parseInt(req.params.id)
+
+  await prisma.event.delete({
+    where: { id: eventId }
+  })
+
+  res.json({ message: 'Event deleted' })
+})
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`)
 })
