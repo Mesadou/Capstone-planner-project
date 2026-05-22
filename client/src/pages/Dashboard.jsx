@@ -6,7 +6,7 @@ import './Dashboard.css'
 function Dashboard() { //Hook calls
   const navigate = useNavigate()
   const { dbUser } = useDbUser()
-  const { hostedEvents, joinedEvents, loading } = useDashboard(dbUser?.id) //?. optional chaining. Give me dbUser.id if dbUser exists otherwise undefined. Prevents crash if dbUser is null
+  const { hostedEvents, joinedEvents, loading, deleteEvent } = useDashboard(dbUser?.id) //?. optional chaining. Give me dbUser.id if dbUser exists otherwise undefined. Prevents crash if dbUser is null
 
   if (loading) return <p>Loading...</p>   //Early return. If data is being fetched show a loading message.
 
@@ -14,7 +14,7 @@ function Dashboard() { //Hook calls
     <main className="dashboard-main">
       <div className="dashboard-header">
         <h1>Welcome back, {dbUser?.username}!</h1>  {/*Shows user's name with optional chaining safety*/}
-        <button 
+        <button
           className="create-btn"
           onClick={() => navigate('/create')}   //Client-side redirect without reloading the page. 
         >
@@ -26,24 +26,41 @@ function Dashboard() { //Hook calls
         <div className="events-header">
           <h2>Your Events</h2>
         </div>
-        
+
+
         {hostedEvents.length === 0 ? (        //Checks if array is empty. Ternary for empty message state or if there are some events
           <p>No events yet — create one!</p>
         ) : (
           <div className="events-list">
-            {hostedEvents.map(event => (      //Loops through each event returns JSX for each one
-              <div 
-                key={event.id}                // required when using .map()
-                className="event-item"
-                onClick={() => navigate(`/events/${event.id}`)} //Renders events as clickable cards. Navigates to event's page using real id
-              >
-                <h3>{event.title}</h3>
-                <p>{event.body}</p>
-                <span className="event-status">{event.status}</span>
-              </div>
-            ))}
+            {hostedEvents.map(event => (
+                <div key={event.id} className="event-item">
+                  {/* Clickable area for navigation */}
+                  <div
+                    className="event-item-content"
+                    onClick={() => navigate(`/events/${event.id}`)}
+                  >
+                    <h3>{event.title}</h3>
+                    <p>{event.body}</p>
+                    <span className="event-status">{event.status}</span>
+                  </div>
+
+                  {/* Delete button - only on hosted events */}
+                  <button
+                    className="delete-btn"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      deleteEvent(event.id)
+                    }}
+                  >
+                    Delete
+                  </button>
+                </div>
+              ))
+            }
           </div>
         )}
+
+
       </section>
 
       <section className="invite-events-section">
@@ -53,8 +70,8 @@ function Dashboard() { //Hook calls
         ) : (
           <div className="events-list">
             {joinedEvents.map(event => (
-              <div 
-                key={event.id} 
+              <div
+                key={event.id}
                 className="event-item"
                 onClick={() => navigate(`/events/${event.id}`)}
               >

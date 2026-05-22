@@ -22,5 +22,10 @@ export function useDashboard(userId) { //Hook to fetch events for userID
     .finally(() => setLoading(false)) //Always runs at the end. Set to false whether loading succeded or failed
   }, [userId]) //re-run this effect if userId changes
 
-  return { hostedEvents, joinedEvents, loading, error } //Returns all four values to be used in component hook
+  async function deleteEvent(eventId) {
+    await api.delete(`/api/events/${eventId}`)
+    setHostedEvents(prev => prev.filter(event => event.id !== eventId))
+  }
+
+  return { hostedEvents, joinedEvents, loading, error, deleteEvent} //Returns all four values to be used in component hook
 }

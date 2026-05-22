@@ -37,7 +37,7 @@ function CreateEvent() {
       const res = await api.post('/api/events', {
         title: formData.title,
         body: formData.body,
-        host_user_id: dbUser.id
+        host_user_id: dbUser.id,
       })
 
       setCreatedEvent(res.data)     //store it, don't navigate yet
@@ -96,7 +96,7 @@ function CreateEvent() {
       </main>
     )
   }
-  
+
   return (
     <main className="create-main">
       <div className="create-container">
@@ -147,14 +147,15 @@ function CreateEvent() {
 
           {error && <p className="error-message">{error}</p>}
 
-          <button
-            type="submit"
-            className="create-btn"
-            disabled={loading || !formData.title}
-          >
-            {loading ? 'Creating...' : 'Create Event'}
-          </button>
-
+          <div className="submit-buttons">
+            <button
+              type="submit"
+              className="create-btn"
+              disabled={loading || !formData.title}
+            >
+              {loading ? 'Creating...' : 'Publish Event'}
+            </button>
+          </div>
 
         </form>
       </section>

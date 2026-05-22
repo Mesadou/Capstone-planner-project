@@ -15,11 +15,7 @@ function EventPage() {
   const { dbUser } = useDbUser();
   const { event, loading, error } = useEvent(id);
   const { members, loading: membersLoading } = useMembers(id);
-  const {
-    suggestions,
-    loading: suggestionsLoading,
-    addSuggestion,
-  } = useSuggestions(id);
+  const { suggestions, loading: suggestionsLoading, addSuggestion, } = useSuggestions(id);
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isAvailabilityOpen, setIsAvailabilityOpen] = useState(false)
 
@@ -62,32 +58,16 @@ function EventPage() {
         <section className="event-box">
           <div>
             <EventCard
-              title="Event/Game Name"
-              description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. In suscipit feugiat purus, elementum ultricies sem dapibus porttitor. Fusce hendrerit nisi risus, non pellentesque ex varius eget. Sed elementum fringilla sapien, vitae aliquam lorem blandit vitae. Vivamus non risus volutpat ex consectetur varius in sit amet massa. Vestibulum quis "
+              title="{event.title}"
+              description={event.body} 
               imageSrc=""
-              members={[
-                {
-                  id: 1,
-                  name: "Rylee",
-                  avatar: "https://i.pravatar.cc/150?img=1",
-                },
-                {
-                  id: 2,
-                  name: "Darty",
-                  avatar: "https://i.pravatar.cc/150?img=2",
-                },
-                {
-                  id: 3,
-                  name: "Jordan",
-                  avatar: "https://i.pravatar.cc/150?img=3",
-                },
-                {
-                  id: 4,
-                  name: "Rylan",
-                  avatar: "https://i.pravatar.cc/150?img=5",
-                },
-              ]}
+              members={members.map(m => ({
+                id: m.user.id,
+                name: m.user.username,
+                avatar: `https://i.pravater.cc/150?img=${m.user.id}`
+              }))}
             />
+
             <div className="event-actions">
               <div className="vote-tracker">
                 <span className="votes-count">0</span>
@@ -131,23 +111,11 @@ function EventPage() {
         <div className="users-list">
           <h3>Members</h3>
           <UserList
-            members={[
-              {
-                id: 1,
-                name: "Rylee",
-                avatar: "https://i.pravatar.cc/150?img=1",
-              },
-              {
-                id: 2,
-                name: "Darty",
-                avatar: "https://i.pravatar.cc/150?img=2",
-              },
-              {
-                id: 3,
-                name: "Jordan",
-                avatar: "https://i.pravatar.cc/150?img=3",
-              },
-            ]}
+            members={members.map(m => ({
+              id: m.user.id,
+              name: m.user.username,
+              avatar: 'https://i.pravatar.cc/150?img=$={m.user.id}'
+            }))}
             layout="sidebar"
           />
         </div>
