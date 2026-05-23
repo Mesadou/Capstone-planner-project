@@ -24,6 +24,7 @@ model User {
   votes         Vote[]
   availability  Availability[]
   eventMembers  EventMember[]
+  messages      Message[]
 }
 
 model Event {
@@ -38,6 +39,7 @@ model Event {
   suggestions   GameSuggestion[]
   availability  Availability[]
   members       EventMember[]
+  messages      Message[]
 }
 
 model GameSuggestion {
@@ -82,4 +84,14 @@ model EventMember {
   joined_at DateTime @default(now())
   event     Event    @relation(fields: [event_id], references: [id])
   user      User     @relation(fields: [user_id], references: [id])
+}
+
+model Message {
+  id         Int      @id @default(autoincrement())
+  content    String
+  event_id   Int
+  user_id    Int
+  created_at DateTime @default(now())
+  event      Event    @relation(fields: [event_id], references: [id])
+  user       User     @relation(fields: [user_id], references: [id])
 }

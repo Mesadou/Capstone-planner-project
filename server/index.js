@@ -322,6 +322,33 @@ app.delete('/api/events/:id', async (req, res) => {
   res.json({ message: 'Event deleted' })
 })
 
+// Get messages for an event
+app.get('/api/events/:id/messages', async (req, res) => {
+  const messages = await prisma.message.findMany({
+    where: { event_id: parseInt(req.params.id) },
+    include: { user: true },
+    orderBy: { created_at: 'asc' }
+  })
+  res.json(messages)
+})
+
+// Send a message
+app.post('/api/events/:id/messages', async (req, res) => {
+  const { content, user_id } = req.body
+
+  const message = await prisma.message.create({
+    data: {
+      content,
+      event_id: parseInt(req.params.id),
+      user_id: parseInt(user_id)
+    },
+    include: { user: true }
+  })
+
+  res.json(message)
+})
+
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`)
 })
