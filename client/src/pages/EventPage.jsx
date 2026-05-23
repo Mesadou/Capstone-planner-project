@@ -4,6 +4,7 @@ import { useDbUser } from "../context/UserContext";
 import { useEvent } from "../hooks/useEvent";
 import { useMembers } from "../hooks/useMembers";
 import { useSuggestions } from "../hooks/useSuggestions";
+import { useMessages } from '../hooks/useMessages';
 import "./EventPage.css";
 import AvailabilityGrid from "../components/AvailabilityGrid";
 import EventCard from "../components/EventCard";
@@ -16,8 +17,10 @@ function EventPage() {
   const { event, loading, error } = useEvent(id);
   const { members, loading: membersLoading } = useMembers(id);
   const { suggestions, loading: suggestionsLoading, addSuggestion, } = useSuggestions(id);
+  const { messages, sendMessage } = useMessages(id)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isAvailabilityOpen, setIsAvailabilityOpen] = useState(false)
+  const [messageText, setMessageText] = useState('')
 
   function handleCantMakeIt() {
     console.log("User cant make it");
@@ -36,6 +39,17 @@ function EventPage() {
       console.log("Suggestion added!");
     } catch (err) {
       console.error(err);
+    }
+  }
+
+  async function handleSendMessage() {
+    if (!messageText.trim() || !dbUser) return
+
+    try {
+      await sendMessage(messageText, dbUser.id)
+      sendMessageText('')
+    } catch (err) {
+      console.error(err)
     }
   }
 
@@ -59,7 +73,7 @@ function EventPage() {
           <div>
             <EventCard
               title="{event.title}"
-              description={event.body} 
+              description={event.body}
               imageSrc=""
               members={members.map(m => ({
                 id: m.user.id,
@@ -99,11 +113,39 @@ function EventPage() {
             <h3>Your Availabilty</h3>
             <p>Cilck the times you're available this week</p>
             <AvailabilityGrid eventId={id} userId={2} />
+          </div>*/}
+
+          <div className="messages-list">
+            {messages.map(msg => (
+              <div key={msg.id} className={`message-item ${msg.user_id === dbUser?.id ? 'own-message' : ''}`}>
+                <span className="message-username">{msg.user.username}</span>
+                <span className="message-content">{msg.content}</span>
+              </div>
+            ))}
           </div>
 
           <div className="type-bar">
-            <input type="text" placeholder="Message" />
-          </div>*/}
+            <input
+              type="text"
+              placeholder="Message"
+              value={messageText}
+              onChange={e => setMessageText(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === 'Enter' && messageText.trim()) {
+                  handleSendMessage()
+                }
+              }}
+            />
+            <button
+              className="send-btn"
+              onClick={handleSendMessage}
+              disabled={!messageText.trim()}
+            >
+              Send
+            </button>
+          </div>
+
+
         </section>
       </section>
 
