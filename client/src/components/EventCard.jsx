@@ -2,7 +2,7 @@ import { useState } from 'react'
 import './EventCard.css'
 
 
-function EventCard({ title, description, members, imageSrc }) {
+function EventCard({ title, description, members, imageSrc, date, format }) {
   const [showAllNames, setShowAllNames] = useState(false)
 
   const displayLimit = 3
@@ -17,6 +17,23 @@ function EventCard({ title, description, members, imageSrc }) {
       <div className="event-title">
         <img className="event-img" src={imageSrc} alt="event" />
         <h1>{title}</h1>
+      </div>
+
+      <div className="event-tags">
+        {formate && (
+          <span className={`event-tag tag-format ${format === 'irl' ? 'tag-irl' : format === 'online' ? 'tag-online' : 'tag-both'}`}>
+            {format === 'irl' ? '📍 In Person' : format === 'online' ? '💻 Online' : '📍💻 IRL & Online'}
+          </span>
+        )}
+        {date && (
+          <span className="event-tag tag-date">
+            {new Date(date).toLocaleDateString('en-US', {
+              weekday: 'short',
+              month: 'short',
+              day: 'numeric'
+            })}
+          </span>
+        )}
       </div>
 
       <div className="event-desc">
@@ -56,7 +73,6 @@ function EventCard({ title, description, members, imageSrc }) {
             </p>
           )}
         </div>
-
       </div>
     </section>
 

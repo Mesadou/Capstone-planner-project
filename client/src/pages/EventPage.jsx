@@ -22,6 +22,11 @@ function EventPage() {
   const [isAvailabilityOpen, setIsAvailabilityOpen] = useState(false)
   const [messageText, setMessageText] = useState('')
 
+  const featuredSuggestion = suggestions.length > 0 
+    ? suggestions.reduce((top, s) =>
+      (s.votes?.length || 0) > (top.votes?.length || 0) ? s : top, suggestions[0])
+    : null
+
   function handleCantMakeIt() {
     console.log("User cant make it");
     setIsModalOpen(false);
@@ -71,9 +76,10 @@ function EventPage() {
 
         <section className="event-box">
           <div>
-            <EventCard
-              title="{event.title}"
-              description={event.body}
+            {featuredSuggestion ? (
+              <EventCard
+              title={event.title}
+              description={event.body || 'No description provided'}
               imageSrc=""
               members={members.map(m => ({
                 id: m.user.id,
@@ -81,6 +87,18 @@ function EventPage() {
                 avatar: `https://i.pravater.cc/150?img=${m.user.id}`
               }))}
             />
+            ) : (<EventCard
+              title="No activity suggested yet"
+              description="Use the sidebar to suggest an activity"
+              imageSrc=""
+              members={members.map(m => ({
+                id: m.user.id,
+                name: m.user.username,
+                avatar: `https://i.pravater.cc/150?img=${m.user.id}`
+              }))}
+              />
+            )}
+            
 
             <div className="event-actions">
               <div className="vote-tracker">
