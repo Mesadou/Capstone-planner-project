@@ -78,9 +78,24 @@ app.get('/api/events/:id', async (req, res) => {
 app.post('/api/events/:id/suggestions', async (req, res) => {
   // Step 1 - get event id from URL
   const eventId = parseInt(req.params.id)
-
   // Step 2 - get suggestion data from request body
   const { title, type, players, user_id } = req.body
+
+  let imageUrl = null
+
+  if(type === 'Video Game') {
+    try {
+      const rawgRes = await fetch(
+        `https://api.rawg.io/api/games?key=YOUR_RAWG_KEY&search=${encodeURIComponent(title)}&page_size=1`
+      )
+      const rawgData = await rawgRes.json()
+      if (rawgData.results?.length > 0) {
+        imageUrl = rawgData.results[0].background_image
+      }
+    } catch (err) {
+      console.error('RAWG lookup failed:', err)
+    }
+  }
 
   // Step 3 - create new suggestion in database
   const suggestion = await prisma.gameSuggestion.create({
@@ -88,6 +103,7 @@ app.post('/api/events/:id/suggestions', async (req, res) => {
       title,
       type,
       players,
+      image_url: imageUrl,
       event_id: eventId,
       user_id: parseInt(user_id)
     }
@@ -103,7 +119,10 @@ app.get('/api/events/:id/suggestions', async (req, res) => {
 
   // Step 2 - find suggestions in the database
   const suggestions = await prisma.gameSuggestion.findMany({
-    where: { event_id: eventId }
+    where: { event_id: eventId },
+    include: {
+      votes: true
+    }
   })
 
   // Step 3 - send back the data

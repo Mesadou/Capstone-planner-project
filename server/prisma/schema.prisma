@@ -47,6 +47,7 @@ model GameSuggestion {
   title        String
   type         String
   players      Int?
+  image_url    String?
   created_at   DateTime @default(now())
   event        Event    @relation(fields: [event_id], references: [id])
   event_id     Int
