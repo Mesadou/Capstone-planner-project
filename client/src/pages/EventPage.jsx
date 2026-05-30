@@ -6,6 +6,7 @@ import { useMembers } from "../hooks/useMembers";
 import { useSuggestions } from "../hooks/useSuggestions";
 import { useMessages } from '../hooks/useMessages';
 import "./EventPage.css";
+import api from '../api'
 import AvailabilityGrid from "../components/AvailabilityGrid";
 import EventCard from "../components/EventCard";
 import Modal from "../components/Modal";
@@ -16,13 +17,15 @@ function EventPage() {
   const { dbUser } = useDbUser();
   const { event, loading, error } = useEvent(id);
   const { members, loading: membersLoading } = useMembers(id);
-  const { suggestions, loading: suggestionsLoading, addSuggestion, } = useSuggestions(id);
+  const { suggestions, loading: suggestionsLoading, addSuggestion, refresh } = useSuggestions(id);
   const { messages, sendMessage } = useMessages(id)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isAvailabilityOpen, setIsAvailabilityOpen] = useState(false)
   const [messageText, setMessageText] = useState('')
+  const [showInvite, setShowInvite] = useState(false)
 
-  const featuredSuggestion = suggestions.length > 0 
+
+  const featuredSuggestion = suggestions.length > 0
     ? suggestions.reduce((top, s) =>
       (s.votes?.length || 0) > (top.votes?.length || 0) ? s : top, suggestions[0])
     : null
@@ -52,7 +55,22 @@ function EventPage() {
 
     try {
       await sendMessage(messageText, dbUser.id)
-      sendMessageText('')
+      setMessageText('')
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  async function handleVote(suggestionId, value) {
+    if (!dbUser) return
+    try {
+      await api.post(`/api/suggestions/${suggestionId}/vote`, {
+        user_id: dbUser.id,
+        value
+      })
+      // Refresh suggestions to show updated votes
+      // Your useSuggestions hook will need a refresh function
+      await refresh()
     } catch (err) {
       console.error(err)
     }
@@ -69,36 +87,62 @@ function EventPage() {
       <section className="event-chat">
         {/*Group Name line */}
         <div className="event-name">
-          <h1 className="group-name">
-            {event ? event.title : "John Smiths Group"}
-          </h1>
+          <h1 className="group-name">{event.title}</h1>
+          <button
+            className="invite-btn"
+            onClick={() => setShowInvite(prev => !prev)}
+          >
+            🔗 Invite
+          </button>
         </div>
+
+        {showInvite && (
+          <div className="invite-link-bar">
+            <input
+              type="text"
+              readOnly
+              value={`${window.location.origin}/join/${event.invite_token}`}
+            />
+            <button
+              className="copy-btn"
+              onClick={() => {
+                navigator.clipboard.writeText(`${window.location.origin}/join/${event.invite_token}`)
+                setShowInvite(false)
+              }}
+            >
+              Copy
+            </button>
+          </div>
+        )}
 
         <section className="event-box">
           <div>
             {featuredSuggestion ? (
               <EventCard
-              title={event.title}
-              description={event.body || 'No description provided'}
-              imageSrc=""
-              members={members.map(m => ({
-                id: m.user.id,
-                name: m.user.username,
-                avatar: `https://i.pravater.cc/150?img=${m.user.id}`
-              }))}
-            />
-            ) : (<EventCard
-              title="No activity suggested yet"
-              description="Use the sidebar to suggest an activity"
-              imageSrc=""
-              members={members.map(m => ({
-                id: m.user.id,
-                name: m.user.username,
-                avatar: `https://i.pravater.cc/150?img=${m.user.id}`
-              }))}
+                title={featuredSuggestion.title}
+                description={featuredSuggestion.type || 'No description provided'}
+                format="irl"
+                date={event.finalized_date || null}
+                members={members.map(m => ({
+                  id: m.user.id,
+                  name: m.user.username,
+                  avatar: `https://i.pravater.cc/150?img=${m.user.id}`
+                }))}
+              />
+            ) : (
+              <EventCard
+                title="No activity suggested yet"
+                description="Use the sidebar to suggest an activity"
+                format={event.game_type}
+                date={null}
+                members={members.map(m => ({
+                  id: m.user.id,
+                  name: m.user.username,
+                  avatar: `https://i.pravater.cc/150?img=${m.user.id}`
+                }))}
               />
             )}
-            
+
 
             <div className="event-actions">
               <div className="vote-tracker">
@@ -174,7 +218,7 @@ function EventPage() {
             members={members.map(m => ({
               id: m.user.id,
               name: m.user.username,
-              avatar: 'https://i.pravatar.cc/150?img=$={m.user.id}'
+              avatar: `https://i.pravater.cc/150?img=${m.user.id}`
             }))}
             layout="sidebar"
           />
@@ -184,47 +228,50 @@ function EventPage() {
         <div className="create-event">
           <h3>Suggest an Activity</h3>
 
+          {/* Show real suggestions from database */}
           <div className="suggestions-list">
-            <div className="suggestion-item">
-              <img className="suggestion-img" />
-              <div className="suggestion-info">
-                <p className="suggestion-name">Dave & Busters</p>
-                <p className="suggestion-type">Arcade</p>
-              </div>
-              <button
-                className="suggest-btn"
-                onClick={() => handleSuggest("Dave & Busters", "Arcade")}
-              >
-                + Suggest
-              </button>
-            </div>
+            {suggestions.map((suggestion, index) => {
+              const voteTotal = suggestion.votes?.reduce((sum, v) => sum + v.value, 0) || 0
+              return (
+                <EventCard
+                  key={suggestion.id}
+                  title={suggestion.title}
+                  description={suggestion.type}
+                  format={event.game_type}
+                  date={null}
+                  members={members.map({
+                    id: m.user.id,
+                    name: m.user.username,
+                    avatar: `https://i.pravater.cc/150?img=${m.user.id}`
+                  })}
+                  voteCount={voteTotal}
+                  isFeatured={suggestion.id === featuredSuggestion?.id}
+                  onVoteUp={() => handleVote(suggestion.id, 1)}
+                  onVoteDown={() => handleVote(suggestion.id, -1)}
+                />
+              )
+            })}
+          </div>
 
-            <div className="suggestion-item">
-              <img className="suggestion-img" />
-              <div className="suggestion-info">
-                <p className="suggestion-name">Catan</p>
-                <p className="suggestion-type">Board Game</p>
-              </div>
-              <button
-                className="suggest-btn"
-                onClick={() => handleSuggest("Catan", "Board Game")}
-              >
-                + Suggest
-              </button>
-            </div>
-
-            <div className="suggestion-item">
-              <img className="suggestion-img" />
-              <div className="suggestion-info">
-                <p className="suggestion-name">Bowling</p>
-                <p className="suggestion-type">Activity</p>
-              </div>
-              <button
-                className="suggest-btn"
-                onClick={() => handleSuggest("Bowling", "Activity")}
-              >
-                + Suggest
-              </button>
+          {/* Keep hardcoded items as quick-add suggestions */}
+          <div className="quick-suggestions">
+            <p className="quick-label">Quick add:</p>
+            <div className="quick-list">
+              {[
+                { title: "Dave & Busters", type: "Arcade" },
+                { title: "Catan", type: "Board Game" },
+                { title: "Bowling", type: "Activity" },
+                { title: "Apex Legends", type: "Video Game" },
+                { title: "Jackbox", type: "Party Game" }
+              ].map(item => (
+                <button
+                  key={item.title}
+                  className="quick-btn"
+                  onClick={() => handleSuggest(item.title, item.type)}
+                >
+                  + {item.title}
+                </button>
+              ))}
             </div>
           </div>
         </div>
@@ -256,7 +303,7 @@ function EventPage() {
               </button>
             </div>
             <p>Click and drag to mark when you're available</p>
-            <AvailabilityGrid eventId={id} userId={1} />
+            <AvailabilityGrid eventId={id} userId={dbUser?.id} />
           </div>
         </div>
       )}

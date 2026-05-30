@@ -33,18 +33,27 @@ function Dashboard() { //Hook calls
         ) : (
           <div className="events-list">
             {hostedEvents.map(event => (
-                <div key={event.id} className="event-item">
-                  {/* Clickable area for navigation */}
-                  <div
-                    className="event-item-content"
-                    onClick={() => navigate(`/events/${event.id}`)}
-                  >
-                    <h3>{event.title}</h3>
-                    <p>{event.body}</p>
-                    <span className="event-status">{event.status}</span>
-                  </div>
+              <div key={event.id} className="event-item">
+                <div
+                  className="event-item-content"
+                  onClick={() => navigate(`/events/${event.id}`)}
+                >
+                  <h3>{event.title}</h3>
+                  <p>{event.body}</p>
+                </div>
 
-                  {/* Delete button - only on hosted events */}
+                <div className="event-item-actions">
+                  <button
+                    className="share-btn"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      navigator.clipboard.writeText(
+                        `${window.location.origin}/join/${event.invite_token}`
+                      )
+                    }}
+                  >
+                    🔗 Copy Link
+                  </button>
                   <button
                     className="delete-btn"
                     onClick={(e) => {
@@ -55,8 +64,8 @@ function Dashboard() { //Hook calls
                     Delete
                   </button>
                 </div>
-              ))
-            }
+              </div>
+            ))}
           </div>
         )}
 

@@ -39,16 +39,25 @@
   
 }
 
-.event-box{
+.event-box {
   display: flex;
   flex-direction: column;
   width: calc(100% - 40px);
-  max-width: 100%;
   height: calc(100vh - 120px);
-  padding: 10px 40px;
+  padding: 10px 20px;
   margin: 10px 0px;
   border-radius: 20px;
   background: rgba(0,0,0,0.6);
+  overflow: hidden;
+}
+
+.event-content {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 8px;
 }
 
 .event-actions{

@@ -38,6 +38,7 @@ function CreateEvent() {
         title: formData.title,
         body: formData.body,
         host_user_id: dbUser.id,
+        game_type: formData.gameType
       })
 
       setCreatedEvent(res.data)     //store it, don't navigate yet

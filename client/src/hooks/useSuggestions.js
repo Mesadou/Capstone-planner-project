@@ -4,13 +4,14 @@ import api from '../api'
 export function useSuggestions(eventId) {
   const [suggestions, setSuggestions] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     if (!eventId) return
 
     api.get(`/api/events/${eventId}/suggestions`)
       .then(res => setSuggestions(res.data))
-      .catch(err => console.error(err))
+      .catch(err => setError(err))
       .finally(() => setLoading(false))
   }, [eventId])
 
@@ -24,5 +25,10 @@ export function useSuggestions(eventId) {
     return res.data
   }
 
-  return { suggestions, loading, addSuggestion }
+  async function refresh() {
+    const res = await api.get(`/api/events/${eventId}/suggestions`)
+    setSuggestions(res.data)
+  }
+
+  return { suggestions, loading, error, addSuggestion, refresh }
 }
