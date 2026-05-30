@@ -46,16 +46,35 @@ app.post('/api/users', async (req, res) => {
 
 // Create a new event
 app.post('/api/events', async (req, res) => {
-  const { title, body, host_user_id } = req.body
+  const { title, body, host_user_id, game_type } = req.body
 
   const event = await prisma.event.create({
     data: {
       title,
       body,
       host_user_id,
+      game_type: game_type || 'both',
       invite_token: Math.random().toString(36).substring(2, 10)
     }
   })
+
+  res.json(event)
+})
+
+app.get('/api/events/join/:token', async (req, res) => {
+  const event = await prisma.event.findUnique({
+    where: { invite_token: req.params.token },
+    include: {
+      host: true,
+      members: {
+        include: { user: true }
+      }
+    }
+  })
+
+  if (!event) {
+    return res.status(404).json({ message: 'Event not found' })
+  }
 
   res.json(event)
 })
@@ -81,29 +100,12 @@ app.post('/api/events/:id/suggestions', async (req, res) => {
   // Step 2 - get suggestion data from request body
   const { title, type, players, user_id } = req.body
 
-  let imageUrl = null
-
-  if(type === 'Video Game') {
-    try {
-      const rawgRes = await fetch(
-        `https://api.rawg.io/api/games?key=YOUR_RAWG_KEY&search=${encodeURIComponent(title)}&page_size=1`
-      )
-      const rawgData = await rawgRes.json()
-      if (rawgData.results?.length > 0) {
-        imageUrl = rawgData.results[0].background_image
-      }
-    } catch (err) {
-      console.error('RAWG lookup failed:', err)
-    }
-  }
-
   // Step 3 - create new suggestion in database
   const suggestion = await prisma.gameSuggestion.create({
     data: {
       title,
       type,
       players,
-      image_url: imageUrl,
       event_id: eventId,
       user_id: parseInt(user_id)
     }
@@ -252,6 +254,8 @@ app.post('/api/events/:id/join', async (req, res) => {
   res.json(member)
 })
 
+
+
 // Get all members of an event
 app.get('/api/events/:id/members', async (req, res) => {
   const eventId = parseInt(req.params.id)
@@ -319,20 +323,16 @@ app.get('/api/users/:id/joined-events', async (req, res) => {
   res.json(events)
 })
 
-// Get all events for a specific user
-app.get('/api/users/:id/events', async (req, res) => {
-  const userId = parseInt(req.params.id)
 
-  const events = await prisma.event.findMany({
-    where: { host_user_id: userId },
-    orderBy: { created_at: 'desc' }
-  })
-
-  res.json(events)
-})
 
 app.delete('/api/events/:id', async (req, res) => {
   const eventId = parseInt(req.params.id)
+
+ // Delete related records first
+  await prisma.eventMember.deleteMany({ where: { event_id: eventId } })
+  await prisma.gameSuggestion.deleteMany({ where: { event_id: eventId } })
+  await prisma.availability.deleteMany({ where: { event_id: eventId } })
+  await prisma.message.deleteMany({ where: { event_id: eventId } })
 
   await prisma.event.delete({
     where: { id: eventId }

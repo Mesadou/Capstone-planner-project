@@ -28,18 +28,20 @@ model User {
 }
 
 model Event {
-  id            Int            @id @default(autoincrement())
-  title         String
-  body          String?
-  status        String         @default("open")
-  invite_token  String         @unique
-  created_at    DateTime       @default(now())
-  host          User           @relation(fields: [host_user_id], references: [id])
-  host_user_id  Int
-  suggestions   GameSuggestion[]
-  availability  Availability[]
-  members       EventMember[]
-  messages      Message[]
+  id             Int            @id @default(autoincrement())
+  title          String
+  body           String?
+  status         String         @default("open")
+  game_type      String         @default("both")
+  invite_token   String         @unique
+  created_at     DateTime       @default(now())
+  host           User           @relation(fields: [host_user_id], references: [id])
+  host_user_id   Int
+  finalized_date DateTime?
+  suggestions    GameSuggestion[]
+  availability   Availability[]
+  members        EventMember[]
+  messages       Message[]
 }
 
 model GameSuggestion {
@@ -47,7 +49,6 @@ model GameSuggestion {
   title        String
   type         String
   players      Int?
-  image_url    String?
   created_at   DateTime @default(now())
   event        Event    @relation(fields: [event_id], references: [id])
   event_id     Int
