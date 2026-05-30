@@ -239,11 +239,11 @@ function EventPage() {
                   description={suggestion.type}
                   format={event.game_type}
                   date={null}
-                  members={members.map({
+                  members={members.map(m => ({
                     id: m.user.id,
                     name: m.user.username,
                     avatar: `https://i.pravater.cc/150?img=${m.user.id}`
-                  })}
+                  }))}
                   voteCount={voteTotal}
                   isFeatured={suggestion.id === featuredSuggestion?.id}
                   onVoteUp={() => handleVote(suggestion.id, 1)}

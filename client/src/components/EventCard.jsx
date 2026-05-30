@@ -2,7 +2,7 @@ import { useState } from 'react'
 import './EventCard.css'
 
 
-function EventCard({ title, description, members, date, format, onVoteup, onVoteDown, voteCount, isFeatured }) {
+function EventCard({ title, description, members, date, format, onVoteUp, onVoteDown, voteCount, isFeatured }) {
   const [showAllNames, setShowAllNames] = useState(false)
 
   const voteTotal = voteCount ?? null
