@@ -11,6 +11,8 @@ import AvailabilityGrid from "../components/AvailabilityGrid";
 import EventCard from "../components/EventCard";
 import Modal from "../components/Modal";
 import UserList from "../components/UserList";
+import SuggestionBubble from '../components/SuggestionBubble'
+import SuggestModal from '../components/SuggestModal'
 
 function EventPage() {
   const { id } = useParams();
@@ -23,7 +25,9 @@ function EventPage() {
   const [isAvailabilityOpen, setIsAvailabilityOpen] = useState(false)
   const [messageText, setMessageText] = useState('')
   const [showInvite, setShowInvite] = useState(false)
-
+  const [isSuggestOpen, setIsSuggestOpen] = useState(false)
+  const [prefillTitle, setPrefillTitle] = useState('')
+  const [prefillType, setPrefillType] = useState('Board Game')
 
   const featuredSuggestion = suggestions.length > 0
     ? suggestions.reduce((top, s) =>
@@ -47,6 +51,15 @@ function EventPage() {
       console.log("Suggestion added!");
     } catch (err) {
       console.error(err);
+    }
+  }
+
+  async function handleDeleteSuggestion(suggestionId) {
+    try {
+      await api.delete(`/api/suggestions/${suggestionId}`)
+      await refresh()
+    } catch (err) {
+      console.error(err)
     }
   }
 
@@ -116,17 +129,17 @@ function EventPage() {
         )}
 
         <section className="event-box">
-          <div>
+          <div className="event-content">
             {featuredSuggestion ? (
               <EventCard
                 title={featuredSuggestion.title}
-                description={featuredSuggestion.type || 'No description provided'}
-                format="irl"
+                description={featuredSuggestion.type}
+                format={event.game_type}
                 date={event.finalized_date || null}
                 members={members.map(m => ({
                   id: m.user.id,
                   name: m.user.username,
-                  avatar: `https://i.pravater.cc/150?img=${m.user.id}`
+                  avatar: `https://i.pravatar.cc/150?img=${m.user.id}`
                 }))}
               />
             ) : (
@@ -138,36 +151,56 @@ function EventPage() {
                 members={members.map(m => ({
                   id: m.user.id,
                   name: m.user.username,
-                  avatar: `https://i.pravater.cc/150?img=${m.user.id}`
+                  avatar: `https://i.pravatar.cc/150?img=${m.user.id}`
                 }))}
               />
             )}
 
 
+            {/* Action buttons */}
             <div className="event-actions">
               <div className="vote-tracker">
-                <span className="votes-count">0</span>
-                <span className="votes-divider">/</span>
-                <span className="votes-total">9</span>
-                <span className="votes-label">responded</span>
+                <span className="votes-count">{members.length}</span>
+                <span className="votes-label">members</span>
               </div>
               <div className="event-buttons">
-                <button
-                  className="availability-btn"
-                  onClick={() => setIsAvailabilityOpen(true)}
-                >
-                  {" "}
+                <button className="availability-btn" onClick={() => setIsAvailabilityOpen(true)}>
                   Set Availability
                 </button>
-
-                <button
-                  className="event-decline"
-                  onClick={() => setIsModalOpen(true)}
-                >
-                  No
-                </button>
+                <button className="event-decline" onClick={() => setIsModalOpen(true)}>No</button>
                 <button className="event-accept">Yes</button>
               </div>
+            </div>
+
+            {/* Suggestion bubbles */}
+            {suggestions.length > 0 && (
+              <div className="suggestions-area">
+                <p className="suggestions-label">Suggested Activities</p>
+                {suggestions.map(suggestion => (
+                  <SuggestionBubble
+                    key={suggestion.id}
+                    suggestion={suggestion}
+                    isFeatured={suggestion.id === featuredSuggestion?.id}
+                    currentUserId={dbUser?.id}
+                    onVoteUp={() => handleVote(suggestion.id, 1)}
+                    onVoteDown={() => handleVote(suggestion.id, -1)}
+                    onDelete={() => handleDeleteSuggestion(suggestion.id)}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* Messages */}
+            <div className="messages-list">
+              {messages.map(msg => (
+                <div
+                  key={msg.id}
+                  className={`message-item ${msg.user_id === dbUser?.id ? 'own-message' : ''}`}
+                >
+                  <span className="message-username">{msg.user.username}</span>
+                  <span className="message-content">{msg.content}</span>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -177,14 +210,7 @@ function EventPage() {
             <AvailabilityGrid eventId={id} userId={2} />
           </div>*/}
 
-          <div className="messages-list">
-            {messages.map(msg => (
-              <div key={msg.id} className={`message-item ${msg.user_id === dbUser?.id ? 'own-message' : ''}`}>
-                <span className="message-username">{msg.user.username}</span>
-                <span className="message-content">{msg.content}</span>
-              </div>
-            ))}
-          </div>
+
 
           <div className="type-bar">
             <input
@@ -229,31 +255,17 @@ function EventPage() {
           <h3>Suggest an Activity</h3>
 
           {/* Show real suggestions from database */}
-          <div className="suggestions-list">
-            {suggestions.map((suggestion, index) => {
-              const voteTotal = suggestion.votes?.reduce((sum, v) => sum + v.value, 0) || 0
-              return (
-                <EventCard
-                  key={suggestion.id}
-                  title={suggestion.title}
-                  description={suggestion.type}
-                  format={event.game_type}
-                  date={null}
-                  members={members.map(m => ({
-                    id: m.user.id,
-                    name: m.user.username,
-                    avatar: `https://i.pravater.cc/150?img=${m.user.id}`
-                  }))}
-                  voteCount={voteTotal}
-                  isFeatured={suggestion.id === featuredSuggestion?.id}
-                  onVoteUp={() => handleVote(suggestion.id, 1)}
-                  onVoteDown={() => handleVote(suggestion.id, -1)}
-                />
-              )
-            })}
-          </div>
+          <button
+            className="suggest-submit-btn"
+            onClick={() => {
+              setPrefillTitle('')
+              setPrefillType('Board Game')
+              setIsSuggestOpen(true)
+            }}
+          >
+            + New Suggestion
+          </button>
 
-          {/* Keep hardcoded items as quick-add suggestions */}
           <div className="quick-suggestions">
             <p className="quick-label">Quick add:</p>
             <div className="quick-list">
@@ -267,7 +279,11 @@ function EventPage() {
                 <button
                   key={item.title}
                   className="quick-btn"
-                  onClick={() => handleSuggest(item.title, item.type)}
+                  onClick={() => {
+                    setPrefillTitle(item.title)
+                    setPrefillType(item.type)
+                    setIsSuggestOpen(true)
+                  }}
                 >
                   + {item.title}
                 </button>
@@ -282,6 +298,17 @@ function EventPage() {
         onClose={() => setIsModalOpen(false)}
         onCantMakeIt={handleCantMakeIt}
         onSuggestNewTime={handleSuggestNewTime}
+      />
+
+      <SuggestModal
+        isOpen={isSuggestOpen}
+        onClose={() => setIsSuggestOpen(false)}
+        prefillTitle={prefillTitle}
+        prefillType={prefillType}
+        onSubmit={async (title, type) => {
+          await addSuggestion(title, type, dbUser?.id)
+          await refresh()
+        }}
       />
 
       {isAvailabilityOpen && (
