@@ -123,7 +123,8 @@ app.get('/api/events/:id/suggestions', async (req, res) => {
   const suggestions = await prisma.gameSuggestion.findMany({
     where: { event_id: eventId },
     include: {
-      votes: true
+      votes: true,
+      suggested_by: true
     }
   })
 
@@ -166,6 +167,21 @@ app.post('/api/suggestions/:id/vote', async (req, res) => {
     })
     res.json(vote)
   }
+})
+
+app.delete('/api/suggestions/:id', async (req, res) => {
+  const suggestionId = parseInt(req.params.id)
+
+  // Delete votes first
+  await prisma.vote.deleteMany({
+    where: { game_suggestion_id: suggestionId }
+  })
+
+  await prisma.gameSuggestion.delete({
+    where: { id: suggestionId }
+  })
+
+  res.json({ message: 'Suggestion deleted' })
 })
 
 // Get all availability for an event grouped by time slot
