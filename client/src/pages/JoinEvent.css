@@ -14,16 +14,19 @@
   flex-direction: column;
   align-items: center;
   justify-content: center; 
+  padding: 0 24px;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(2, 2, 2, 0.7);
-  background: linear-gradient(0.15turn, #C1BEBE, 30%, #635C5C);
+  background: linear-gradient(0.15turn, #C1BEBE, 55%, #635C5C);
 }
 
 .invitation-card h1{
   font-size: 36px;
 }
 
-
+.event-tag{
+  color: black;
+}
 
 .invite-group{
   display: flex;
@@ -44,22 +47,53 @@
 }
 
 .event-join{
-  margin: 20px 20px 10px auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin: 10px 20px;
+
+  & button{ 
+    padding: 8px 16px;
+    font-size: 16px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    
+  }
+
+  & .decline-btn{
+    background: #FF0707;
+    
+    &:hover{
+      background: #EC8787;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(147,  77, 176, 0.4);
+    }
+    &:active{
+      transform: translateY(0);
+    } 
+  }
+
+  & .join-btn{
+    background: #07FF2D;
+    
+    &:hover{
+      background: #8EF29D;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(147,  77, 176, 0.4);
+    }
+    &:active{
+      transform: translateY(0);
+    }
+  }
+
+  
 }
 
-.event-join button{ 
-  padding: 8px 16px;
-  font-size: 16px;
-  border-radius: 20px;
-  border: none;
-  cursor: pointer;
-  white-space: nowrap;
-  background: #07FF2D;
-}
 
-.event-join button:hover{
-  background: #8EF29D;
-}
  
 
   

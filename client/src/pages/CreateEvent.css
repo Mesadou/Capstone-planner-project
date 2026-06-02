@@ -4,7 +4,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #F876F5;
+  background: linear-gradient(0.25turn, #C7A9D3, #f876f5);
   padding: 2rem;
 }
 
@@ -30,13 +30,15 @@
 }
 
 .create-bgcontainer {
-  background: linear-gradient(0.15turn, #C1BEBE, 30%, #635C5C);
+  background: linear-gradient(0.15turn, #C1BEBE, 55%, #635C5C);
   border-radius: 16px;
   padding: 1rem;
   width: min(500px, 90%);
   margin-top: 40px;
   margin-bottom: auto;
   box-sizing: border-box;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1),
+    0 4px 6px rgba(0,0,0,0.05);
 }
 
 .create-form {
@@ -95,20 +97,127 @@
   background: #AA60c8;
   color: white;
   cursor: pointer;
-  transition: background 0.15s;
-}
+  transition: all 0.15s ease;
 
-.create-btn:hover {
-  background: #934db0;
-}
-
-.create-btn:disabled {
-  background: #ccc;
-  cursor: not-allowed;
+  &:hover {
+    transform: translateY(-1px);
+    background: #934db0;
+    box-shadow: 0 4px 12px rgba(147, 77, 176, 0.4);
+  }
+  &:active{
+    transform: translateY(0);
+  }
+  &:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+  
 }
 
 .error-message {
   font-size: 13px;
   color: #ff4444;
   text-align: center;
+}
+
+.invite-box{
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  color: black;
+}
+
+.invite-link-row{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+    
+  & .invite-input{
+    width: min(250px, 90%);
+  }
+    
+  & .copy-btn{
+    width: min(110px, 90%);
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    transition: all 0.15s ease;
+    margin-top: 10px;
+    padding: 6px 20px;
+    border-radius: 10px; 
+    border: none; 
+    background: #AA60c8;
+    cursor: pointer; 
+  
+  }
+
+  & .copy-btn:hover{
+    transform: translateY(-1px);
+    background: rgb(147, 77, 176);
+    box-shadow: 0 4px 12px rgba(147, 77, 176, 0.4);
+  }
+  & .copy-btn:active{
+    transform: translateY(0);
+  }
+
+}
+
+.invite-actions{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 10px 0;
+
+  & .secondary-btn{
+    padding: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 10px;
+    border: none;
+    background: #AA60c8;
+    color: white;
+    cursor: pointer;
+    transition: background 0.15s;
+ 
+    &:hover{
+      transform: translateY(-1px);
+      background: rgb(147, 77, 176);
+      box-shadow: 0 4px 12px rgba(147,  77, 176, 0.4);
+    }
+    &:active{
+      transform: translateY(0);
+    } 
+  }
+  
+  & .create-btn {
+    padding: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 10px;
+    border: none;
+    background: #AA60c8;
+    color: white;
+    cursor: pointer;
+    transition: background 0.15s;
+  
+    &:hover {
+      transform: translateY(-1px);
+      background: #934db0;
+      box-shadow: 0 4px 12px rgba(147,  77, 176, 0.4);
+    }
+    &:active{
+      transform: translateY(0);
+    }
+    &:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+  }
+
+
 }

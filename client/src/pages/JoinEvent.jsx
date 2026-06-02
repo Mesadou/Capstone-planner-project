@@ -11,13 +11,15 @@ function JoinEvent() {
   const { dbUser } = useDbUser()
   const navigate = useNavigate()
   const [event, setEvent] = useState(null)
-  const [loading, setLoading] = useState(true) 
+  const [loading, setLoading] = useState(true)
   const [joining, setJoining] = useState(false)
   const [error, setError] = useState(null)
 
-  useEffect(() =>{
+  const isAlreadyMember = event?.members?.some(m => m.user_id === dbUser?.id)
+
+  useEffect(() => {
     if (!token) return
-    
+
     api.get(`/api/events/join/${token}`)
       .then(res => setEvent(res.data))
       .catch(err => setError('Event not found'))
@@ -67,14 +69,24 @@ function JoinEvent() {
         />
 
         <div className="event-join">
-          <button className="decline-btn" onClick={() => navigate('/')}>Decline</button>
-          <button
-            className="join-btn"
-            onClick={handleJoin}
-            disabled={joining}
-          >
-            {joining ? 'Joining...' : 'Join Group'}
-          </button>
+          <button className="decline-btn" onClick={() => navigate('/dashboard')}>Decline</button>
+
+          {isAlreadyMember ? (
+            <button
+              className="join-btn"
+              onClick={() => navigate(`/events/${event.id}`)}
+            >
+              Join Event
+            </button>
+          ) : (
+            <button
+              className="join-btn"
+              onClick={handleJoin}
+              disabled={joining}
+            >
+              {joining ? 'Joining...' : 'Join Group'}
+            </button>
+          )}
         </div>
 
         {error && <p className="error-message">{error}</p>}

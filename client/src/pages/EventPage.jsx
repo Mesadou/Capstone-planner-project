@@ -130,6 +130,7 @@ function EventPage() {
 
         <section className="event-box">
           <div className="event-content">
+            <div className="event-box-bg">
             {featuredSuggestion ? (
               <EventCard
                 title={featuredSuggestion.title}
@@ -189,6 +190,7 @@ function EventPage() {
                 ))}
               </div>
             )}
+            </div>
 
             {/* Messages */}
             <div className="messages-list">
@@ -197,7 +199,7 @@ function EventPage() {
                   key={msg.id}
                   className={`message-item ${msg.user_id === dbUser?.id ? 'own-message' : ''}`}
                 >
-                  <span className="message-username">{msg.user.username}</span>
+                  <span className="message-username">{msg.user.username}:</span>
                   <span className="message-content">{msg.content}</span>
                 </div>
               ))}

@@ -80,17 +80,18 @@ function CreateEvent() {
 
             <div className="invite-actions">
               <button
-                className="create-btn"
-                onClick={() => navigate(`/events/${createdEvent.id}`)}  // ← backticks fixed
-              >
-                Go to Event Page
-              </button>
-              <button
                 className="secondary-btn"
                 onClick={() => navigate('/dashboard')}
               >
                 Back to Dashboard
               </button>
+              <button
+                className="create-btn"
+                onClick={() => navigate(`/events/${createdEvent.id}`)}  // ← backticks fixed
+              >
+                Go to Event Page
+              </button>
+              
             </div>
           </div>
         </section>

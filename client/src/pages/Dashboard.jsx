@@ -13,84 +13,101 @@ function Dashboard() { //Hook calls
   return (
     <main className="dashboard-main">
       <div className="dashboard-header">
-        <h1>Welcome back, {dbUser?.username}!</h1>  {/*Shows user's name with optional chaining safety*/}
-        <button
-          className="create-btn"
-          onClick={() => navigate('/create')}   //Client-side redirect without reloading the page. 
-        >
-          + Create Event
-        </button>
+        {/*Shows user's name with optional chaining safety*/}
+        <h1>Welcome back, {dbUser?.username}!</h1>
       </div>
 
-      <section className="events-section">
-        <div className="events-header">
-          <h2>Your Events</h2>
-        </div>
+      <div className="dashboard-content">
+
+        <section className="events-section">
+          <div className="events-header">
+            <h2>Your Events</h2>
+            <button
+              className="create-btn"
+              onClick={() => navigate('/create')}   //Client-side redirect without reloading the page. 
+            >
+              + Create Event
+            </button>
+          </div>
 
 
-        {hostedEvents.length === 0 ? (        //Checks if array is empty. Ternary for empty message state or if there are some events
-          <p>No events yet — create one!</p>
-        ) : (
-          <div className="events-list">
-            {hostedEvents.map(event => (
-              <div key={event.id} className="event-item">
+          {hostedEvents.length === 0 ? (        //Checks if array is empty. Ternary for empty message state or if there are some events
+            <p>No events yet — create one!</p>
+          ) : (
+            <div className="events-list">
+              {hostedEvents.map(event => (
+                <div key={event.id} className="event-item">
+                  <div
+                    className="event-item-content"
+                    onClick={() => navigate(`/events/${event.id}`)}
+                  >
+                    <h3>{event.title}</h3>
+                    <p>{event.body}</p>
+                  </div>
+
+                  <div className="event-item-actions">
+                    <button
+                      className="share-btn"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        navigator.clipboard.writeText(
+                          `${window.location.origin}/join/${event.invite_token}`
+                        )
+                      }}
+                    >
+                      🔗 Copy Link
+                    </button>
+                    <button
+                      className="delete-btn"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        deleteEvent(event.id)
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+
+        </section>
+
+
+        <section className="invite-events-section">
+          <h2>Invited Events</h2>
+          {joinedEvents.length === 0 ? (        //Same pattern as hosted events
+            <p>No invitations yet</p>
+          ) : (
+            <div className="events-list">
+              {joinedEvents.map(event => (
                 <div
-                  className="event-item-content"
-                  onClick={() => navigate(`/events/${event.id}`)}
+                  key={event.id}
+                  className="event-item invited-event-item"
+                  onClick={() => navigate(`/join/${event.invite_token}`)}
                 >
-                  <h3>{event.title}</h3>
-                  <p>{event.body}</p>
+                  <div className="invited-event-host">
+                    <img
+                      className="host-avatar"
+                      src={event.host?.profile_image || `https://i.pravatar.cc/150?img=${event.host?.id}`}
+                      alt={event.host?.username}
+                    />
+                    <div classname="invited-event-info">
+                      <h3>{event.title}</h3>
+                      {/*shows who create the event.*/}
+                      <p>Hosted by {event.host?.username}</p>
+                    </div>
+                  </div>
                 </div>
-
-                <div className="event-item-actions">
-                  <button
-                    className="share-btn"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      navigator.clipboard.writeText(
-                        `${window.location.origin}/join/${event.invite_token}`
-                      )
-                    }}
-                  >
-                    🔗 Copy Link
-                  </button>
-                  <button
-                    className="delete-btn"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      deleteEvent(event.id)
-                    }}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
+        </section>
 
 
-      </section>
-
-      <section className="invite-events-section">
-        <h2>Invited Events</h2>
-        {joinedEvents.length === 0 ? (        //Same pattern as hosted events
-          <p>No invitations yet</p>
-        ) : (
-          <div className="events-list">
-            {joinedEvents.map(event => (
-              <div
-                key={event.id}
-                className="event-item"
-                onClick={() => navigate(`/events/${event.id}`)}
-              >
-                <h3>{event.title}</h3>
-                <p>Hosted by {event.host?.username}</p> //shows who create the event.
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
+      </div>
     </main>
   )
 }
