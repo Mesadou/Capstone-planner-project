@@ -29,3 +29,5 @@ function Home() {
 }
 
 export default Home
+
+{/* Vercel Install Coding Agent Plugin. npx plugins add vercel/vercel-plugin */}
