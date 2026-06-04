@@ -18,6 +18,7 @@ model User {
   username      String         @unique
   email         String         @unique
   password_hash String?        // make this optional since Clerk handles passwords
+  image_url     String?
   created_at    DateTime       @default(now())
   events        Event[]
   suggestions   GameSuggestion[]

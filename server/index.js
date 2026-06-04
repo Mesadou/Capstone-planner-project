@@ -286,7 +286,7 @@ app.get('/api/events/:id/members', async (req, res) => {
 
 // Sync Clerk user with database
 app.post('/api/users/sync', async (req, res) => {
-  const { clerk_id, username, email } = req.body
+  const { clerk_id, username, email, image_url } = req.body
 
   // Check if user already exists
   const existing = await prisma.user.findUnique({
@@ -294,7 +294,12 @@ app.post('/api/users/sync', async (req, res) => {
   })
 
   if (existing) {
-    return res.json(existing)
+    // Update image_url in case they changed their photo
+    const updated = await prisma.user.update({
+      where: { clerk_id },
+      data: { image_url }
+    })
+    return res.json(updated)
   }
 
   // Create new user if they don't exist
@@ -303,6 +308,7 @@ app.post('/api/users/sync', async (req, res) => {
       clerk_id,
       username,
       email,
+      image_url,
       password_hash: null
     }
   })
