@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useDbUser } from "../context/UserContext";
 import { useEvent } from "../hooks/useEvent";
 import { useMembers } from "../hooks/useMembers";
@@ -16,6 +16,7 @@ import SuggestModal from '../components/SuggestModal'
 
 function EventPage() {
   const { id } = useParams();
+  const navigate  = useNavigate();
   const { dbUser } = useDbUser();
   const { event, loading, error } = useEvent(id);
   const { members, loading: membersLoading } = useMembers(id);
@@ -98,15 +99,22 @@ function EventPage() {
     <main className="event-main">
       {/*Text Box */}
       <section className="event-chat">
-        {/*Group Name line */}
-        <div className="event-name">
-          <h1 className="group-name">{event.title}</h1>
-          <button
-            className="invite-btn"
-            onClick={() => setShowInvite(prev => !prev)}
-          >
-            🔗 Invite
-          </button>
+        <div className="event-name-row">
+          <button className="back-btn" onClick={() => navigate('/dashboard')}>◀</button>
+          {/*Group Name line */}
+          <div className="event-name">
+            <h1 className="group-name">{event.title} </h1>
+            <div className="event-name-right">
+              <button className="invite-btn" onClick={() => setShowInvite(prev => !prev)}>
+                🔗 Invite
+              </button>
+              <img
+                className="current-user-avatar"
+                src={dbUser?.image_url || `https://i.pravatar.cc/150?img=${dbUser?.id}`}
+                alt={dbUser?.username}
+              />
+            </div>
+          </div>
         </div>
 
         {showInvite && (
@@ -131,78 +139,102 @@ function EventPage() {
         <section className="event-box">
           <div className="event-content">
             <div className="event-box-bg">
-            {featuredSuggestion ? (
-              <EventCard
-                title={featuredSuggestion.title}
-                description={featuredSuggestion.type}
-                format={event.game_type}
-                date={event.finalized_date || null}
-                members={members.map(m => ({
-                  id: m.user.id,
-                  name: m.user.username,
-                  avatar: `https://i.pravatar.cc/150?img=${m.user.id}`
-                }))}
-              />
-            ) : (
-              <EventCard
-                title="No activity suggested yet"
-                description="Use the sidebar to suggest an activity"
-                format={event.game_type}
-                date={null}
-                members={members.map(m => ({
-                  id: m.user.id,
-                  name: m.user.username,
-                  avatar: `https://i.pravatar.cc/150?img=${m.user.id}`
-                }))}
-              />
-            )}
+              {featuredSuggestion ? (
+                <EventCard
+                  title={featuredSuggestion.title}
+                  description={featuredSuggestion.type}
+                  format={event.game_type}
+                  date={event.finalized_date || null}
+                  members={members.map(m => ({
+                    id: m.user.id,
+                    name: m.user.username,
+                    avatar: m.user.image_url || `https://i.pravatar.cc/150?img=${m.user.id}`
+                  }))}
+                />
+              ) : (
+                <EventCard
+                  title="No activity suggested yet"
+                  description="Use the sidebar to suggest an activity"
+                  format={event.game_type}
+                  date={null}
+                  members={members.map(m => ({
+                    id: m.user.id,
+                    name: m.user.username,
+                    avatar: m.user.image_url || `https://i.pravatar.cc/150?img=${m.user.id}`
+                  }))}
+                />
+              )}
 
 
-            {/* Action buttons */}
-            <div className="event-actions">
-              <div className="vote-tracker">
-                <span className="votes-count">{members.length}</span>
-                <span className="votes-label">members</span>
-              </div>
-              <div className="event-buttons">
-                <button className="availability-btn" onClick={() => setIsAvailabilityOpen(true)}>
-                  Set Availability
-                </button>
-                <button className="event-decline" onClick={() => setIsModalOpen(true)}>No</button>
-                <button className="event-accept">Yes</button>
-              </div>
-            </div>
-
-            {/* Suggestion bubbles */}
-            {suggestions.length > 0 && (
-              <div className="suggestions-area">
-                <p className="suggestions-label">Suggested Activities</p>
-                {suggestions.map(suggestion => (
-                  <SuggestionBubble
-                    key={suggestion.id}
-                    suggestion={suggestion}
-                    isFeatured={suggestion.id === featuredSuggestion?.id}
-                    currentUserId={dbUser?.id}
-                    onVoteUp={() => handleVote(suggestion.id, 1)}
-                    onVoteDown={() => handleVote(suggestion.id, -1)}
-                    onDelete={() => handleDeleteSuggestion(suggestion.id)}
-                  />
-                ))}
-              </div>
-            )}
-            </div>
-
-            {/* Messages */}
-            <div className="messages-list">
-              {messages.map(msg => (
-                <div
-                  key={msg.id}
-                  className={`message-item ${msg.user_id === dbUser?.id ? 'own-message' : ''}`}
-                >
-                  <span className="message-username">{msg.user.username}:</span>
-                  <span className="message-content">{msg.content}</span>
+              {/* Action buttons */}
+              <div className="event-actions">
+                <div className="vote-tracker">
+                  <span className="votes-count">{members.length}</span>
+                  <span className="votes-label">members</span>
                 </div>
-              ))}
+                <div className="event-buttons">
+                  <button className="availability-btn" onClick={() => setIsAvailabilityOpen(true)}>
+                    Set Availability
+                  </button>
+                  <button className="event-decline" onClick={() => setIsModalOpen(true)}>No</button>
+                  <button className="event-accept">Yes</button>
+                </div>
+              </div>
+
+              {/* Suggestion bubbles */}
+              {suggestions.length > 0 && (
+                <div className="suggestions-area">
+                  <p className="suggestions-label">Suggested Activities</p>
+                  {suggestions.map(suggestion => (
+                    <SuggestionBubble
+                      key={suggestion.id}
+                      suggestion={suggestion}
+                      isFeatured={suggestion.id === featuredSuggestion?.id}
+                      currentUserId={dbUser?.id}
+                      onVoteUp={() => handleVote(suggestion.id, 1)}
+                      onVoteDown={() => handleVote(suggestion.id, -1)}
+                      onDelete={() => handleDeleteSuggestion(suggestion.id)}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="messages-list">
+              {messages.map(msg => {
+                const isOwn = msg.user_id === dbUser?.id
+                return (
+                  <div
+                    key={msg.id}
+                    className={`message-item ${isOwn ? 'own-message' : ''}`}
+                  >
+                    {/* Avatar only shows for other people's messages */}
+                    {!isOwn && (
+                      <img
+                        className="message-avatar"
+                        src={msg.user?.image_url || `https://i.pravatar.cc/150?img=${msg.user?.id}`}
+                        alt={msg.user?.username}
+                      />
+                    )}
+
+                    <div className="message-bubble">
+                      {!isOwn && (
+                        <span className="message-username">{msg.user?.username}:</span>
+                      )}
+                      <span className="message-content">{msg.content}</span>
+                    </div>
+
+                    {/* Avatar on right for own messages */}
+                    {isOwn && (
+                      <img
+                        className="message-avatar"
+                        src={dbUser?.image_url || `https://i.pravatar.cc/150?img=${dbUser?.id}`}
+                        alt={dbUser?.username}
+                      />
+                    )}
+                  </div>
+                )
+              })}
             </div>
           </div>
 
@@ -246,7 +278,7 @@ function EventPage() {
             members={members.map(m => ({
               id: m.user.id,
               name: m.user.username,
-              avatar: `https://i.pravater.cc/150?img=${m.user.id}`
+              avatar: m.user.image_url || `https://i.pravatar.cc/150?img=${m.user.id}`
             }))}
             layout="sidebar"
           />

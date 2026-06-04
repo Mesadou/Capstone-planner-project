@@ -101,6 +101,7 @@ function CreateEvent() {
 
   return (
     <main className="create-main">
+      <button className="back-btn" onClick={() => navigate('/dashboard')}>◀</button>
       <div className="create-container">
         <h1>Welcome to Creating your group event </h1>
         <p>Plan your next game night with friends</p>

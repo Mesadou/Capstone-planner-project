@@ -52,7 +52,7 @@ function JoinEvent() {
       <section className="invitation-card">
 
         <div className="invite-group">
-          <img className="invite-avatar" src={`https://i.pravater.cc/150?img=${event.host?.id}`} alt="host" />
+          <img className="invite-avatar" src={`https://i.pravatar.cc/150?img=${event.host?.id}`} alt="host" />
           <h1>{event.host?.username} has invited you to {event.title}</h1>
         </div>
 
@@ -64,7 +64,7 @@ function JoinEvent() {
           members={event.members.map(m => ({
             id: m.user.id,
             name: m.user.username,
-            avatar: `https://i.pravater.cc/150?img=${m.user.id}`
+            avatar: m.user.image_url || `https://i.pravatar.cc/150?img=${m.user.id}`
           }))}
         />
 

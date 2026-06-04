@@ -36,10 +36,10 @@ function Dashboard() { //Hook calls
           ) : (
             <div className="events-list">
               {hostedEvents.map(event => (
-                <div key={event.id} className="event-item">
+                <div key={event.id} className="event-item" onClick={() => navigate(`/events/${event.id}`)}>
                   <div
                     className="event-item-content"
-                    onClick={() => navigate(`/events/${event.id}`)}
+                    
                   >
                     <h3>{event.title}</h3>
                     <p>{event.body}</p>
@@ -91,7 +91,7 @@ function Dashboard() { //Hook calls
                   <div className="invited-event-host">
                     <img
                       className="host-avatar"
-                      src={event.host?.profile_image || `https://i.pravatar.cc/150?img=${event.host?.id}`}
+                      src={event.host?.image_url || `https://i.pravatar.cc/150?img=${event.host?.id}`}
                       alt={event.host?.username}
                     />
                     <div classname="invited-event-info">

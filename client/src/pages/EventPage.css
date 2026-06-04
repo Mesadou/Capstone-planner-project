@@ -25,12 +25,54 @@
   background: #7A1CAC;
 }
 
+.event-name-row{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 1000px;
+  margin: 10px auto 20px 0px;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+  
+.back-btn {
+  top: 20px;
+  left: 20px;
+  flex-shrink: 0; 
+  width: 36px;
+  height: 36px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255, 0.3);
+  background: #AA60c8;
+  color: white;
+  cursor: pointer;
+  font-size: 22px;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover{
+      background: #934db0;
+      border-color: rgba(248, 118, 245, 0.5);
+      transform: translateY(-1px);
+      box-shadow:  
+        0 6px 20px rgba(0,0,0,0.25),
+        0 2px 8px rgba(0,0,0,0.15);
+    }
+    &:active{
+      transform: translateY(0);
+    }
+}
+
 
 .event-name{
-  width: min(1000px, 90%);
-  max-width: 1000px;
+  flex: 1;
+  min-width: 0;
   padding: 8px 20px;
-  margin: 10px auto 20px 0px;
   border-radius: 50px;
   background: rgba(128, 128, 128, 0.7);
   display: flex;
@@ -65,6 +107,21 @@
     }
   }
 
+}
+
+.event-name-right {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.current-user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(170, 96, 200, 0.5);
 }
 
 .group-name{
@@ -300,16 +357,34 @@
     }
 }
 
-.message-item {
+.messages-list {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.message-item {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 6px;
   max-width: 100%;
   align-self: flex-start;
 
+  & .message-avatar{
+    width: 28px;
+    height: 28x;
+    margin-top: 10px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(170, 96, 200, 0.5);
+    flex-shrink: 0;
+  }
+
   & .message-username {
     font-size: 10px;
-    color: rgba(255,255,255,0.4);
+    color: rgba(255,255,255,0.6);
     padding: 0 10px;
     font-weight: 500;
   }
@@ -327,7 +402,7 @@
 
   &.own-message {
     align-self: flex-end;
-    align-items: flex-end;
+    align-items: row-reverse;
 
     & .message-content {
       background: #AA60c8;
