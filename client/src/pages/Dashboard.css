@@ -19,6 +19,10 @@
     color: white;
     margin: 0;
   }
+
+  & .user-btn{
+    margin-left: auto;
+  }
 }
 
 .dashboard-content{

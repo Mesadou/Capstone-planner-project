@@ -1,3 +1,5 @@
+import { UserButton } from '@clerk/react'
+
 import { useNavigate } from 'react-router-dom'        //Redirecting to other pages
 import { useDbUser } from '../context/UserContext'    //get current logged in users' database record
 import { useDashboard } from '../hooks/useDashboard'  //hook
@@ -15,6 +17,9 @@ function Dashboard() { //Hook calls
       <div className="dashboard-header">
         {/*Shows user's name with optional chaining safety*/}
         <h1>Welcome back, {dbUser?.username}!</h1>
+        <div className="user-btn">
+          <UserButton />
+        </div>
       </div>
 
       <div className="dashboard-content">
@@ -39,7 +44,7 @@ function Dashboard() { //Hook calls
                 <div key={event.id} className="event-item" onClick={() => navigate(`/events/${event.id}`)}>
                   <div
                     className="event-item-content"
-                    
+
                   >
                     <h3>{event.title}</h3>
                     <p>{event.body}</p>
